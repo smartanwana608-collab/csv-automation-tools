@@ -1,62 +1,87 @@
-// assets/js/filter-agents.js
-
-const analyzeBtn = document.getElementById("analyzeBtn");
-const fileInput = document.getElementById("csvFile");
-
-let parsedData = [];
-let headers = [];
-
+// ===== CONFIG =====
 const AGENT_KEYWORDS = [
-  "realty",
   "realtor",
-  "realestate",
-  "property",
+  "realty",
   "broker",
+  "brokerage",
   "kw",
   "coldwell",
   "century",
   "sotheby",
-  "exp",
-  "remax"
+  "property",
+  "estate"
 ];
 
-analyzeBtn.addEventListener("click", () => {
-  if (!fileInput.files.length) return;
+// ===== HELPERS =====
+function isAgentEmail(email) {
+  if (!email) return false;
+  const lower = email.toLowerCase();
+  return AGENT_KEYWORDS.some(keyword => lower.includes(keyword));
+}
 
-  const file = fileInput.files[0];
-  const reader = new FileReader();
+function isRealEstateAgent(row, emailIndexes) {
+  return emailIndexes.some(index => {
+    const value = row[index];
+    return isAgentEmail(value);
+  });
+}
 
-  reader.onload = (e) => {
-    const text = e.target.result.trim();
-    const rows = text.split("\n").map(r => r.split(","));
+// ===== MAIN LOGIC =====
+document.addEventListener("DOMContentLoaded", () => {
+  const fileInput = document.querySelector('input[type="file"]');
+  const analyzeBtn = document.querySelector(".btn");
+  const resultBoxes = document.querySelectorAll(".result-box strong");
 
-    headers = rows[0];
-    parsedData = rows.slice(1);
+  let parsedRows = [];
+  let headers = [];
+  let agents = [];
+  let nonAgents = [];
 
-    let agentCount = 0;
-    let nonAgentCount = 0;
+  fileInput.addEventListener("change", () => {
+    analyzeBtn.classList.add("enabled");
+    analyzeBtn.disabled = false;
+    analyzeBtn.style.cursor = "pointer";
+    analyzeBtn.style.opacity = "1";
+  });
 
-    parsedData.forEach(row => {
-      const rowText = row.join(" ").toLowerCase();
+  analyzeBtn.addEventListener("click", () => {
+    const file = fileInput.files[0];
+    if (!file) return;
 
-      const isAgent = AGENT_KEYWORDS.some(keyword =>
-        rowText.includes(keyword)
-      );
+    const reader = new FileReader();
 
-      if (isAgent) {
-        agentCount++;
-      } else {
-        nonAgentCount++;
-      }
-    });
+    reader.onload = e => {
+      const text = e.target.result;
+      const rows = text.trim().split("\n").map(r => r.split(","));
 
-    alert(
-      `Analysis Complete\n\n` +
-      `Total Rows: ${parsedData.length}\n` +
-      `Real Estate Agents: ${agentCount}\n` +
-      `Non-Agents: ${nonAgentCount}`
-    );
-  };
+      headers = rows[0];
+      parsedRows = rows.slice(1);
 
-  reader.readAsText(file);
+      // Detect email-related columns
+      const emailIndexes = headers
+        .map((h, i) => ({ h: h.toLowerCase(), i }))
+        .filter(obj => obj.h.includes("email"))
+        .map(obj => obj.i);
+
+      agents = [];
+      nonAgents = [];
+
+      parsedRows.forEach(row => {
+        if (isRealEstateAgent(row, emailIndexes)) {
+          agents.push(row);
+        } else {
+          nonAgents.push(row);
+        }
+      });
+
+      // Update UI counts
+      resultBoxes[0].textContent = agents.length;
+      resultBoxes[1].textContent = nonAgents.length;
+
+      console.log("Agents:", agents);
+      console.log("Non-agents:", nonAgents);
+    };
+
+    reader.readAsText(file);
+  });
 });
