@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Filter Real Estate Agents | CSV Automation Tools</title>
+
+  <meta name="description" content="Upload a contact CSV file and automatically separate real estate agents without modifying your original data." />
+  <meta name="robots" content="index, follow" />
+
+  <link rel="stylesheet" href="../assets/css/main.css" />
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <h1>Filter Real Estate Agents</h1>
+    <p>
+      Upload a contact CSV file and automatically identify
+      real estate agents while preserving all original columns.
+    </p>
+  </header>
+
+  <!-- TOOL CONTAINER -->
+  <main class="feature-hub">
+
+    <!-- UPLOAD CARD -->
+    <div class="feature-card">
+      <h3>Upload CSV File</h3>
+      <p>
+        Select a CSV contact file. Processing happens locally in your browser —
+        no data is uploaded or stored.
+      </p>
+
+      <div style="margin: 20px 0;">
+        <input type="file" accept=".csv" disabled />
+      </div>
+
+      <span class="btn-disabled">
+        Upload enabled in next step
+      </span>
+    </div>
+
+    <!-- PROCESS CARD -->
+    <div class="feature-card disabled">
+      <h3>Analyze Contacts</h3>
+      <p>
+        The system will scan email domains and company names
+        to detect real estate agents.
+      </p>
+
+      <span class="btn-disabled">
+        Analyze CSV
+      </span>
+    </div>
+
+    <!-- RESULTS CARD -->
+    <div class="feature-card disabled">
+      <h3>Results</h3>
+      <p>
+        A summary will appear here showing how many
+        real estate agents were detected.
+      </p>
+
+      <span class="btn-disabled">
+        Results Pending
+      </span>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <p>
+      <a href="../index.html" style="text-decoration:none;color:#1f3a8a;font-weight:600;">
+        ← Back to tools
+      </a>
+    </p>
+  </footer>
+
+</body>
+</html>
