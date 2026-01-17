@@ -5,15 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Filter Real Estate Agents | CSV Automation Tools</title>
-
-  <meta name="description" content="Upload a CSV file to preview and prepare filtering of real estate agents." />
+  <meta name="description" content="Upload a CSV file to detect and extract real estate agents." />
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -36,15 +31,6 @@
       text-align: center;
     }
 
-    header h1 {
-      font-size: 1.6rem;
-    }
-
-    header p {
-      color: var(--gray);
-      font-size: 0.95rem;
-    }
-
     main {
       max-width: 1000px;
       margin: 40px auto;
@@ -59,15 +45,8 @@
       margin-bottom: 30px;
     }
 
-    .card h2 {
-      font-size: 1.3rem;
-      margin-bottom: 10px;
-    }
-
-    .card p {
-      color: var(--gray);
-      margin-bottom: 20px;
-    }
+    h2 { margin-bottom: 10px; }
+    p { color: var(--gray); margin-bottom: 20px; }
 
     .upload-box {
       border: 2px dashed var(--border);
@@ -76,15 +55,12 @@
       text-align: center;
     }
 
-    input[type="file"] {
-      margin-top: 12px;
-    }
+    input[type="file"] { margin-top: 12px; }
 
     .file-info {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 16px;
-      margin-top: 20px;
     }
 
     .info-item {
@@ -96,7 +72,6 @@
     }
 
     .table-wrapper {
-      margin-top: 20px;
       overflow-x: auto;
       border: 1px solid var(--border);
       border-radius: 10px;
@@ -112,26 +87,23 @@
       padding: 12px;
       border-bottom: 1px solid var(--border);
       white-space: nowrap;
-      text-align: left;
     }
 
-    th {
-      background: #f9fafb;
-      font-weight: 600;
-    }
+    th { background: #f9fafb; }
 
     .action {
-      margin-top: 30px;
-      text-align: right;
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
     }
 
     .btn {
       background: var(--primary);
-      color: #ffffff;
-      padding: 14px 26px;
+      color: #fff;
+      padding: 14px 24px;
       border-radius: 10px;
       border: none;
-      font-size: 15px;
       font-weight: 600;
       cursor: pointer;
       opacity: 0.4;
@@ -155,7 +127,7 @@
 
 <header>
   <h1>Filter Real Estate Agents</h1>
-  <p>Upload a CSV file to preview and prepare filtering.</p>
+  <p>Upload a CSV file to detect and extract real estate agents.</p>
 </header>
 
 <main>
@@ -163,8 +135,6 @@
   <!-- UPLOAD -->
   <div class="card">
     <h2>Upload CSV File</h2>
-    <p>Select a CSV file. All columns will remain intact.</p>
-
     <div class="upload-box">
       <strong>Choose CSV file</strong><br />
       <input type="file" id="csvFile" accept=".csv" />
@@ -174,7 +144,6 @@
   <!-- FILE INFO -->
   <div class="card">
     <h2>File Overview</h2>
-
     <div class="file-info">
       <div class="info-item" id="fileName">File name: —</div>
       <div class="info-item" id="rowCount">Total rows: —</div>
@@ -185,22 +154,25 @@
   <!-- PREVIEW -->
   <div class="card">
     <h2>CSV Preview</h2>
-    <p>Showing first 5 rows.</p>
-
     <div class="table-wrapper">
       <table id="previewTable"></table>
     </div>
 
     <div class="action">
       <button id="analyzeBtn" class="btn">Analyze CSV</button>
+      <button id="downloadBtn" class="btn">Download Agents CSV</button>
     </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="card" id="resultsCard" style="display:none;">
+    <h2>Results</h2>
+    <p id="resultsText"></p>
   </div>
 
 </main>
 
-<footer>
-  © 2026 CSV Automation Tools
-</footer>
+<footer>© 2026 CSV Automation Tools</footer>
 
 <script>
   const fileInput = document.getElementById("csvFile");
@@ -209,6 +181,15 @@
   const rowCountEl = document.getElementById("rowCount");
   const columnCountEl = document.getElementById("columnCount");
   const analyzeBtn = document.getElementById("analyzeBtn");
+  const downloadBtn = document.getElementById("downloadBtn");
+  const resultsCard = document.getElementById("resultsCard");
+  const resultsText = document.getElementById("resultsText");
+
+  let headers = [];
+  let dataRows = [];
+  let agents = [];
+
+  const KEYWORDS = ["realtor", "realestate", "realty", "brokerage", "homes", "property", "estate"];
 
   fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
@@ -217,49 +198,57 @@
     fileNameEl.textContent = "File name: " + file.name;
 
     const reader = new FileReader();
-    reader.onload = function (e) {
-      const text = e.target.result;
-      const rows = text.trim().split("\n").map(r => r.split(","));
+    reader.onload = e => {
+      const rows = e.target.result.trim().split("\n").map(r => r.split(","));
+      headers = rows[0];
+      dataRows = rows.slice(1);
 
-      const headers = rows[0];
-      const previewRows = rows.slice(1, 6);
-
-      rowCountEl.textContent = "Total rows: " + (rows.length - 1);
+      rowCountEl.textContent = "Total rows: " + dataRows.length;
       columnCountEl.textContent = "Columns detected: " + headers.length;
 
-      table.innerHTML = "";
-
-      const thead = document.createElement("thead");
-      const headRow = document.createElement("tr");
-
-      headers.forEach(h => {
-        const th = document.createElement("th");
-        th.textContent = h;
-        headRow.appendChild(th);
-      });
-
-      thead.appendChild(headRow);
-      table.appendChild(thead);
-
-      const tbody = document.createElement("tbody");
-
-      previewRows.forEach(row => {
-        const tr = document.createElement("tr");
-        row.forEach(cell => {
-          const td = document.createElement("td");
-          td.textContent = cell;
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
-
-      table.appendChild(tbody);
+      table.innerHTML = "<thead><tr>" +
+        headers.map(h => `<th>${h}</th>`).join("") +
+        "</tr></thead><tbody>" +
+        dataRows.slice(0,5).map(r =>
+          "<tr>" + r.map(c => `<td>${c}</td>`).join("") + "</tr>"
+        ).join("") +
+        "</tbody>";
 
       analyzeBtn.classList.add("enabled");
+      downloadBtn.classList.remove("enabled");
     };
-
     reader.readAsText(file);
   });
+
+  analyzeBtn.onclick = () => {
+    agents = dataRows.filter(row => {
+      return row.some(cell =>
+        KEYWORDS.some(k => cell.toLowerCase().includes(k))
+      );
+    });
+
+    resultsText.textContent =
+      `Detected ${agents.length} real estate agents out of ${dataRows.length} rows.`;
+
+    resultsCard.style.display = "block";
+    downloadBtn.classList.add("enabled");
+  };
+
+  downloadBtn.onclick = () => {
+    const csv =
+      [headers, ...agents]
+        .map(r => r.join(","))
+        .join("\n");
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "real-estate-agents.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 </script>
 
 </body>
