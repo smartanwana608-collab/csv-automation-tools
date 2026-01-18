@@ -300,3 +300,175 @@ h2 {
   font-size: 0.85rem;
   color: #6b7280;
 }
+/* =========================
+   PRICING PAGE
+   ========================= */
+
+.pricing-hero {
+  text-align: center;
+  padding: 80px 20px 60px;
+  background: radial-gradient(circle at top, #6b4eff22, transparent 60%);
+}
+
+.pricing-hero h1 {
+  font-size: 2.5rem;
+  color: #111827;
+  margin-bottom: 12px;
+}
+
+.pricing-hero p {
+  max-width: 680px;
+  margin: 0 auto;
+  color: #4b5563;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+/* =========================
+   PRICING SECTION
+   ========================= */
+
+.pricing-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+/* =========================
+   PRICING CARD
+   ========================= */
+
+.pricing-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 36px 30px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+/* ACTIVE (FREE) */
+.pricing-card.active {
+  border: 2px solid #6b4eff;
+}
+
+/* PRO (DISABLED) */
+.pricing-card.pro.disabled {
+  opacity: 0.85;
+}
+
+/* =========================
+   PRICING TEXT
+   ========================= */
+
+.pricing-card h2 {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.price {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #6b4eff;
+  margin: 12px 0 4px;
+}
+
+.price-note {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+/* =========================
+   FEATURES LIST
+   ========================= */
+
+.pricing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 30px;
+}
+
+.pricing-features li {
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+/* =========================
+   BADGES
+   ========================= */
+
+.badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.badge.pro {
+  background: #111827;
+  color: #ffffff;
+}
+
+.badge.free {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+/* =========================
+   BUTTONS
+   ========================= */
+
+.pricing-card .btn {
+  margin-top: auto;
+  text-align: center;
+}
+
+.disabled-btn {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* =========================
+   PRICING NOTE
+   ========================= */
+
+.pricing-note {
+  text-align: center;
+  padding: 40px 20px 80px;
+  color: #6b7280;
+  font-size: 0.95rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* =========================
+   MOBILE TWEAKS
+   ========================= */
+
+@media (max-width: 600px) {
+  .pricing-hero h1 {
+    font-size: 2rem;
+  }
+
+  .price {
+    font-size: 2.5rem;
+  }
+}
