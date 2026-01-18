@@ -29,20 +29,21 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(11, 13, 18, 0.96);
-  backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
+  padding: 20px 40px;
+  background: rgba(11, 13, 18, 0.95);
+  backdrop-filter: blur(8px);
 }
 
 .nav-container {
   max-width: 1200px;
   margin: auto;
-  padding: 18px 24px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 }
 
+/* LOGO */
 .logo {
   font-size: 22px;
   font-weight: 800;
@@ -51,23 +52,22 @@ body {
 }
 
 .nav-links a {
-  margin-left: 28px;
-  font-size: 0.95rem;
+  margin-left: 24px;
   text-decoration: none;
   color: var(--muted);
   font-weight: 500;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
+.nav-links a.active,
+.nav-links a:hover {
   color: var(--violet);
 }
 
-/* ================= HERO (HOMEPAGE) ================= */
+/* ================= HERO ================= */
 .hero {
   position: relative;
-  text-align: center;
   padding: 120px 20px 140px;
+  text-align: center;
   overflow: hidden;
 }
 
@@ -83,18 +83,10 @@ body {
   font-weight: 900;
 }
 
-.hero h1 span {
-  color: var(--violet);
-}
-
 .hero-subtext {
-  margin-top: 18px;
+  margin-top: 20px;
   font-size: 1.1rem;
   color: var(--muted);
-}
-
-.hero-actions {
-  margin-top: 36px;
 }
 
 .hero-glow {
@@ -136,38 +128,16 @@ section {
   padding: 100px 20px;
 }
 
-/* ================= HOMEPAGE TRUST BLOCK ================= */
-.home-features {
-  max-width: 1100px;
-  margin: auto;
+h2 {
   text-align: center;
-}
-
-.home-feature-grid {
-  margin-top: 60px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 28px;
-}
-
-.home-feature-card {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 28px;
-}
-
-.home-feature-card h3 {
-  margin-bottom: 10px;
-}
-
-.home-feature-card p {
-  color: var(--muted);
+  font-size: 2.1rem;
+  margin-bottom: 60px;
 }
 
 /* ================= PAGE HERO ================= */
 .page-hero {
   max-width: 900px;
-  margin: 90px auto 60px;
+  margin: 80px auto 60px;
   text-align: center;
 }
 
@@ -177,14 +147,14 @@ section {
 }
 
 .page-hero p {
-  font-size: 18px;
   color: var(--muted);
+  font-size: 18px;
 }
 
 /* ================= FEATURES PAGE ================= */
 .features-grid-page {
   max-width: 1100px;
-  margin: 0 auto 120px;
+  margin: 0 auto 100px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 28px;
@@ -200,11 +170,7 @@ section {
 
 .feature-card-page ul {
   list-style: none;
-  margin: 18px 0 24px;
-}
-
-.feature-card-page ul li {
-  margin-bottom: 8px;
+  margin-bottom: 24px;
 }
 
 .feature-card-page .btn {
@@ -215,17 +181,14 @@ section {
 }
 
 /* ================= HOW IT WORKS ================= */
-.how-hero {
-  max-width: 900px;
-  margin: 90px auto 60px;
-  text-align: center;
-}
-
-.how-steps {
+.how-it-works {
   max-width: 1100px;
   margin: auto;
+}
+
+.how-it-works-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 28px;
 }
 
@@ -233,11 +196,13 @@ section {
   background: var(--card);
   border-radius: 16px;
   padding: 32px;
+  text-align: center;
 }
 
-.step-number {
+.how-step-number {
   width: 44px;
   height: 44px;
+  margin: 0 auto 16px;
   border-radius: 50%;
   background: rgba(107, 78, 255, 0.15);
   color: var(--violet);
@@ -245,22 +210,46 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 14px;
 }
 
-.how-step p,
-.how-step li {
+.how-step h3 {
+  margin-bottom: 12px;
+}
+
+.how-step p {
   color: var(--muted);
   font-size: 0.95rem;
 }
 
-/* CTA */
-.how-cta {
+.how-step ul {
+  list-style: none;
+  margin-top: 12px;
+}
+
+.how-step ul li {
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
+/* PRIVACY */
+.how-privacy {
+  max-width: 800px;
+  margin: auto;
   text-align: center;
 }
 
-.how-cta .btn {
-  margin-top: 30px;
+.how-privacy p {
+  color: var(--muted);
+  margin-top: 12px;
+}
+
+/* CTA */
+.how-it-works-cta {
+  text-align: center;
+}
+
+.how-it-works-cta .btn {
+  margin-top: 24px;
 }
 
 /* ================= PRICING ================= */
@@ -334,6 +323,10 @@ section {
 
 /* ================= MOBILE ================= */
 @media (max-width: 768px) {
+  .nav {
+    padding: 16px 20px;
+  }
+
   .nav-links {
     display: none;
   }
