@@ -1,88 +1,65 @@
-// ===============================
-// PROMPT ENGINE — SAFE MINIMAL
-// ===============================
+// ================================
+// PROMPT ENGINE — STABLE V1
+// ================================
 
 const promptInput = document.getElementById("promptInput");
-const fileInput = document.getElementById("csvFile");
+const csvFileInput = document.getElementById("csvFile");
 const runBtn = document.getElementById("runBtn");
-
 const statusBox = document.getElementById("statusBox");
 const statusText = document.getElementById("statusText");
 const resultCard = document.getElementById("resultCard");
 const resultSummary = document.getElementById("resultSummary");
 
-let headers = [];
-let rows = [];
+let parsedHeaders = [];
+let parsedRows = [];
 
-// -------------------------------
-// CSV PARSER (simple + safe)
-// -------------------------------
+// Enable run when CSV is selected
+csvFileInput.addEventListener("change", () => {
+  runBtn.disabled = !csvFileInput.files.length;
+});
+
+// Parse CSV
 function parseCSV(text) {
-  const lines = text.trim().split("\n");
-  headers = lines[0].split(",").map(h => h.trim());
-  rows = lines.slice(1).map(r => r.split(","));
+  const lines = text.split(/\r?\n/).filter(Boolean);
+  const headers = lines.shift().split(",");
+  const rows = lines.map(l => l.split(","));
+  return { headers, rows };
 }
 
-// -------------------------------
-// ENABLE RUN BUTTON
-// -------------------------------
-function updateRunBtn() {
-  runBtn.disabled = !(
-    promptInput.value.trim() &&
-    fileInput.files.length
-  );
-}
-
-promptInput.addEventListener("input", updateRunBtn);
-fileInput.addEventListener("change", updateRunBtn);
-
-// -------------------------------
-// RUN PROMPT
-// -------------------------------
+// Handle run
 runBtn.addEventListener("click", () => {
-  const prompt = promptInput.value.toLowerCase();
-  const file = fileInput.files[0];
-  if (!file) return;
+  try {
+    statusBox.style.display = "block";
+    statusText.textContent = "Processing...";
 
-  statusBox.style.display = "block";
-  statusText.textContent = "Reading CSV...";
+    const prompt = promptInput.value.toLowerCase();
 
-  const reader = new FileReader();
+    if (!window.filterRealEstateAgents) {
+      throw new Error("filterRealEstateAgents not loaded");
+    }
 
-  reader.onload = e => {
-    try {
-      parseCSV(e.target.result);
+    const file = csvFileInput.files[0];
+    const reader = new FileReader();
 
-      let finalHeaders = headers;
-      let finalRows = rows;
+    reader.onload = () => {
+      const { headers, rows } = parseCSV(reader.result);
 
-      // ✅ FILTER REAL ESTATE
-      if (prompt.includes("real estate")) {
-        if (typeof window.filterRealEstateAgents !== "function") {
-          throw new Error("filterRealEstateAgents is not loaded");
-        }
+      let result = { headers, rows };
 
-        const result = window.filterRealEstateAgents(
-          finalHeaders,
-          finalRows
-        );
-
-        finalHeaders = result.headers;
-        finalRows = result.rows;
-
-        resultSummary.textContent =
-          `Filtered real estate agents\n` +
-          `Rows returned: ${finalRows.length}`;
+      if (prompt.includes("filter real estate")) {
+        result = window.filterRealEstateAgents(headers, rows);
       }
 
       resultCard.style.display = "block";
+      resultSummary.textContent = JSON.stringify(result.meta || {}, null, 2);
       statusText.textContent = "Completed";
+    };
 
-    } catch (err) {
-      console.error(err);
-      statusText.textContent = "Error — check console";
-    }
-  };
+    reader.readAsText(file);
 
-  reader.readAsText(file);
+  } catch (err) {
+    console.error(err);
+    alert("An error occurred while applying actions.");
+    statusText.textContent = "Error";
+  }
 });
