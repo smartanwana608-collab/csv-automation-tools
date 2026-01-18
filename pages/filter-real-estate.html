@@ -111,6 +111,53 @@ main {
   cursor: pointer;
 }
 
+/* ===== KEYWORD EDITOR ===== */
+.keyword-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.keyword {
+  background: #e5e7eb;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.keyword button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  color: #6b7280;
+}
+
+.keyword-add {
+  display: flex;
+  gap: 10px;
+}
+
+.keyword-add input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.keyword-add button {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 /* Progress bar */
 #progressWrap {
   display: none;
@@ -155,10 +202,22 @@ main {
   </div>
 </div>
 
+<!-- ✅ KEYWORD EDITOR CARD -->
+<div class="card">
+  <h2>Detection Keywords</h2>
+  <p>Edit the keywords used to identify real estate agents (email-based).</p>
+
+  <div id="keywordList" class="keyword-list"></div>
+
+  <div class="keyword-add">
+    <input type="text" id="newKeyword" placeholder="Add keyword (e.g. realtor)" />
+    <button id="addKeywordBtn">Add</button>
+  </div>
+</div>
+
 <div class="card">
   <button id="analyzeBtn" class="btn">Analyze CSV</button>
 
-  <!-- Progress -->
   <div id="progressWrap">
     <p>Processing: <span id="progressPercent">0%</span></p>
     <div id="progressBarBg">
@@ -203,14 +262,47 @@ const progressWrap = document.getElementById("progressWrap");
 const progressBar = document.getElementById("progressBar");
 const progressPercent = document.getElementById("progressPercent");
 
+/* ===== KEYWORDS (LIVE EDITABLE) ===== */
+let keywords = [
+  "realtor","realty","broker","brokerage","kw","coldwell","century","sotheby","estate"
+];
+
+const keywordListEl = document.getElementById("keywordList");
+const newKeywordInput = document.getElementById("newKeyword");
+const addKeywordBtn = document.getElementById("addKeywordBtn");
+
+function renderKeywords() {
+  keywordListEl.innerHTML = "";
+  keywords.forEach((kw, index) => {
+    const el = document.createElement("div");
+    el.className = "keyword";
+    el.innerHTML = `${kw} <button onclick="removeKeyword(${index})">×</button>`;
+    keywordListEl.appendChild(el);
+  });
+}
+
+function removeKeyword(index) {
+  keywords.splice(index, 1);
+  renderKeywords();
+}
+
+addKeywordBtn.onclick = () => {
+  const value = newKeywordInput.value.trim().toLowerCase();
+  if (!value || keywords.includes(value)) return;
+  keywords.push(value);
+  newKeywordInput.value = "";
+  renderKeywords();
+};
+
+renderKeywords();
+
+/* ===== CSV LOGIC ===== */
 let headers = [];
 let dataRows = [];
 let agentRows = [];
 let otherRows = [];
 
-const keywords = ["realtor","realty","broker","brokerage","kw","coldwell","century","sotheby","estate"];
-
-fileInput.addEventListener("change", () => {
+fileInput.onchange = () => {
   const file = fileInput.files[0];
   if (!file) return;
 
@@ -229,16 +321,13 @@ fileInput.addEventListener("change", () => {
     analyzeBtn.onclick = analyzeCSV;
   };
   reader.readAsText(file);
-});
+};
 
 function analyzeCSV() {
   agentRows = [];
   otherRows = [];
 
   progressWrap.style.display = "block";
-  progressBar.style.width = "0%";
-  progressPercent.textContent = "0%";
-
   analyzeBtn.textContent = "Analyzing…";
   analyzeBtn.disabled = true;
 
@@ -253,7 +342,6 @@ function analyzeCSV() {
 
   function processChunk() {
     const end = Math.min(processed + CHUNK, total);
-
     for (let i = processed; i < end; i++) {
       const row = dataRows[i];
       const isAgent = emailIndexes.some(idx =>
@@ -272,10 +360,8 @@ function analyzeCSV() {
     } else {
       agentCountEl.textContent = agentRows.length;
       otherCountEl.textContent = otherRows.length;
-
       downloadAgentsBtn.classList.add("enabled");
       downloadOthersBtn.classList.add("enabled");
-
       analyzeBtn.textContent = "Analysis Complete";
     }
   }
