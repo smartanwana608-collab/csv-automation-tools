@@ -1,23 +1,26 @@
 // ===================================
-// CREATE COLUMN (ACTION)
+// CREATE NEW COLUMN (ACTION)
 // ===================================
 
 /**
- * Create a new empty column in the CSV
+ * Create a new column with empty values
  *
  * @param {Array} headers
  * @param {Array} rows
  * @param {String} columnName
- * @returns {{ headers: Array, rows: Array }}
+ * @returns {Object}
  */
-export function createColumn(headers, rows, columnName) {
-  if (!columnName || !columnName.trim()) {
-    return { headers, rows };
+function createNewColumn(headers, rows, columnName) {
+  if (!columnName || typeof columnName !== "string") {
+    throw new Error("Column name is required");
   }
 
-  // Prevent duplicate column names
-  if (headers.includes(columnName)) {
-    return { headers, rows };
+  // Prevent duplicate column
+  if (headers.map(h => h.toLowerCase()).includes(columnName.toLowerCase())) {
+    return {
+      headers,
+      rows
+    };
   }
 
   const newHeaders = [...headers, columnName];
@@ -31,3 +34,8 @@ export function createColumn(headers, rows, columnName) {
     rows: newRows
   };
 }
+
+// ===================================
+// EXPORT FOR PROMPT ENGINE
+// ===================================
+window.createNewColumn = createNewColumn;
