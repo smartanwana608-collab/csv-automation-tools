@@ -1,5 +1,5 @@
 // ===============================
-// FIX ADDRESSES ACTION (PHASE 1)
+// FIX ADDRESSES ACTION (PHASE 1) — SAFE V1
 // ===============================
 
 // Common address replacements (extend anytime)
@@ -49,48 +49,52 @@ function extractHouseNumber(text) {
 }
 
 // ===============================
-// MAIN ACTION
+// MAIN ACTION (SAFE)
 // ===============================
 
 /**
  * Fix addresses in CSV rows
- * @param {Array} headers - CSV headers
- * @param {Array} rows - CSV rows
- * @param {String} addressColumnName - column to fix (e.g. "Address")
+ * @param {Array} headers
+ * @param {Array} rows
+ * @param {String} addressColumnName
  */
 function fixAddresses(headers, rows, addressColumnName = "Address") {
   const addressIndex = headers.findIndex(
     h => h.toLowerCase() === addressColumnName.toLowerCase()
   );
 
+  // ✅ SAFE EXIT — address column not found
   if (addressIndex === -1) {
-    throw new Error(`Address column "${addressColumnName}" not found`);
+    return {
+      headers,
+      rows
+    };
   }
 
-  // Add house number column if missing
+  // Add "House Number" column if missing
   let houseNumberIndex = headers.findIndex(
     h => h.toLowerCase() === "house number"
   );
 
-  if (houseNumberIndex === -1) {
-    headers.push("House Number");
-    houseNumberIndex = headers.length - 1;
+  let newHeaders = [...headers];
+  let newRows = rows.map(row => [...row]);
 
-    rows.forEach(row => row.push(""));
+  if (houseNumberIndex === -1) {
+    newHeaders.push("House Number");
+    houseNumberIndex = newHeaders.length - 1;
+
+    newRows = newRows.map(row => [...row, ""]);
   }
 
-  rows.forEach(row => {
+  newRows.forEach(row => {
     const original = row[addressIndex];
-    const fixed = normalizeAddress(original);
-    const houseNumber = extractHouseNumber(original);
-
-    row[addressIndex] = fixed;
-    row[houseNumberIndex] = houseNumber;
+    row[addressIndex] = normalizeAddress(original);
+    row[houseNumberIndex] = extractHouseNumber(original);
   });
 
   return {
-    headers,
-    rows
+    headers: newHeaders,
+    rows: newRows
   };
 }
 
