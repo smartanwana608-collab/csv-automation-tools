@@ -105,3 +105,69 @@ body {
     font-size: 2rem;
   }
 }
+
+/* ===================================== */
+/* KEYWORD EDITOR (FILTER REAL ESTATE UI) */
+/* ===================================== */
+
+.keyword-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.keyword {
+  background: #e5e7eb;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.keyword button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  color: #6b7280;
+  line-height: 1;
+}
+
+.keyword button:hover {
+  color: #111827;
+}
+
+.keyword-add {
+  display: flex;
+  gap: 10px;
+}
+
+.keyword-add input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+}
+
+.keyword-add input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.keyword-add button {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.keyword-add button:hover {
+  opacity: 0.95;
+}
