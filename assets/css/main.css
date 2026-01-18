@@ -113,6 +113,7 @@ body {
   text-decoration: none;
   border: none;
   cursor: pointer;
+  text-align: center;
 }
 
 .btn.primary {
@@ -193,7 +194,6 @@ h2 {
   flex-direction: column;
 }
 
-/* TEXT STACK */
 .feature-card-page h2 {
   margin-bottom: 12px;
 }
@@ -212,34 +212,12 @@ h2 {
   margin-bottom: 8px;
 }
 
-/* ✅ FIX: BUTTON ALIGNMENT */
+/* FEATURE BUTTON ALIGNMENT */
 .feature-card-page .btn {
   margin-top: auto;
   align-self: center;
   width: 100%;
   max-width: 240px;
-  text-align: center;
-}
-
-/* BADGES */
-.feature-badge {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-weight: 600;
-}
-
-.feature-badge.beta {
-  background: rgba(107,78,255,0.2);
-  color: var(--violet);
-}
-
-.feature-badge.pro {
-  background: rgba(255,215,0,0.2);
-  color: gold;
 }
 
 /* ================= PRICING ================= */
@@ -266,6 +244,15 @@ h2 {
   color: var(--violet);
 }
 
+/* ✅ PRICING BUTTON ALIGNMENT FIX */
+.pricing-card .btn {
+  margin-top: auto;
+  align-self: center;
+  width: 100%;
+  max-width: 260px;
+  text-align: center;
+}
+
 /* ================= FOOTER ================= */
 .footer {
   border-top: 1px solid var(--border);
@@ -281,26 +268,9 @@ h2 {
   gap: 60px;
 }
 
-.footer-logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.logo-dot {
-  width: 10px;
-  height: 10px;
-  background: var(--violet);
-  border-radius: 50%;
-}
-
 .footer-links {
   display: flex;
   gap: 60px;
-}
-
-.footer-column h4 {
-  margin-bottom: 12px;
 }
 
 .footer-column a {
