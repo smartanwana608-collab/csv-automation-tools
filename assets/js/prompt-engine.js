@@ -1,7 +1,8 @@
 // ======================
-// PROMPT ENGINE (V1)
+// PROMPT ENGINE (V1) — ES MODULE READY
 // ======================
 
+// DOM
 const promptInput = document.getElementById("promptInput");
 const fileInput = document.getElementById("csvFile");
 const runBtn = document.getElementById("runBtn");
@@ -13,10 +14,11 @@ const resultCard = document.getElementById("resultCard");
 const resultSummary = document.getElementById("resultSummary");
 const downloadBtn = document.getElementById("downloadResult");
 
-// ✅ DETECTED ACTIONS DOM
+// Detected actions UI
 const detectedActionsCard = document.getElementById("detectedActionsCard");
 const detectedActionsList = document.getElementById("detectedActionsList");
 
+// Data
 let headers = [];
 let rows = [];
 let resultRows = [];
@@ -58,7 +60,7 @@ function detectActions(prompt) {
 }
 
 // ======================
-// RENDER DETECTED ACTIONS
+// DETECTED ACTIONS RENDER
 // ======================
 function renderDetectedActions(actions) {
   detectedActionsList.innerHTML = "";
@@ -68,7 +70,7 @@ function renderDetectedActions(actions) {
     removeDuplicates: "Remove duplicates",
     splitByColumn: "Split CSV by column",
     extractHouseNumber: "Extract house numbers",
-    fixAddress: "Fix addresses"
+    fixAddress: "Fix addresses",
   };
 
   let found = false;
@@ -86,7 +88,21 @@ function renderDetectedActions(actions) {
 }
 
 // ======================
-// ACTIONS (BASIC V1)
+// LIVE PROMPT LISTENER ✅
+// ======================
+promptInput.addEventListener("input", () => {
+  const prompt = promptInput.value.trim();
+  if (!prompt) {
+    detectedActionsCard.style.display = "none";
+    return;
+  }
+
+  const actions = detectActions(prompt);
+  renderDetectedActions(actions);
+});
+
+// ======================
+// BASIC ACTIONS (TEMP — WILL MOVE TO /actions)
 // ======================
 function removeRowsMissingEmail(data) {
   const emailIndex = headers.findIndex(h =>
@@ -107,7 +123,7 @@ function removeDuplicates(data) {
 }
 
 // ======================
-// RUN
+// RUN PROMPT
 // ======================
 runBtn.addEventListener("click", () => {
   const prompt = promptInput.value.trim();
@@ -126,8 +142,6 @@ runBtn.addEventListener("click", () => {
     parseCSV(e.target.result);
 
     const actions = detectActions(prompt);
-
-    // ✅ SHOW DETECTED ACTIONS
     renderDetectedActions(actions);
 
     resultRows = [...rows];
@@ -140,10 +154,8 @@ runBtn.addEventListener("click", () => {
       resultRows = removeDuplicates(resultRows);
     }
 
-    resultSummary.textContent = `
-Original rows: ${rows.length}
-→ Final rows: ${resultRows.length}
-    `;
+    resultSummary.textContent =
+      `Original rows: ${rows.length}\n→ Final rows: ${resultRows.length}`;
 
     resultCard.style.display = "block";
     statusText.textContent = "Completed";
