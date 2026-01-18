@@ -20,8 +20,10 @@
 <!-- ================= NAV ================= -->
 <header class="nav">
   <div class="nav-container">
+
     <a href="/index.html" class="logo">Leadcleer</a>
 
+    <!-- DESKTOP NAV -->
     <nav class="nav-links">
       <a href="/index.html" class="active">Home</a>
       <a href="/pages/features.html">Features</a>
@@ -29,7 +31,22 @@
       <a href="/pages/how-it-works.html">How It Works</a>
       <a href="/pages/contact.html">Contact</a>
     </nav>
+
+    <!-- MOBILE MENU BUTTON -->
+    <button class="menu-toggle" aria-label="Open Menu">
+      ☰
+    </button>
+
   </div>
+
+  <!-- MOBILE MENU -->
+  <nav class="mobile-nav">
+    <a href="/index.html" class="active">Home</a>
+    <a href="/pages/features.html">Features</a>
+    <a href="/pages/pricing.html">Pricing</a>
+    <a href="/pages/how-it-works.html">How It Works</a>
+    <a href="/pages/contact.html">Contact</a>
+  </nav>
 </header>
 
 <!-- ================= HERO ================= -->
@@ -127,6 +144,16 @@
     © 2026 Leadcleer. All rights reserved.
   </div>
 </footer>
+
+<!-- ================= MOBILE MENU SCRIPT ================= -->
+<script>
+  const toggle = document.querySelector('.menu-toggle');
+  const mobileNav = document.querySelector('.mobile-nav');
+
+  toggle.addEventListener('click', () => {
+    mobileNav.classList.toggle('open');
+  });
+</script>
 
 </body>
 </html>
