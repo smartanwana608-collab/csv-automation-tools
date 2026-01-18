@@ -1,21 +1,25 @@
 // ===================================
-// EXTRACT HOUSE NUMBERS (ACTION)
+// EXTRACT HOUSE NUMBERS (ACTION) — SAFE V1
 // ===================================
 
 /**
- * Find column index by name (case-insensitive)
+ * Find best guess address column
  */
-function findColumnIndex(headers, columnName) {
-  return headers.findIndex(
-    h => h.toLowerCase().trim() === columnName.toLowerCase().trim()
+function findAddressColumnIndex(headers) {
+  const candidates = [
+    "address",
+    "street",
+    "street address",
+    "property address"
+  ];
+
+  return headers.findIndex(h =>
+    candidates.includes(h.toLowerCase().trim())
   );
 }
 
 /**
  * Extract house number from text
- * Examples:
- *  - "123 Main Street" → 123
- *  - "45B Elm Ave" → 45B
  */
 function extractHouseNumber(text) {
   if (!text) return "";
@@ -25,25 +29,35 @@ function extractHouseNumber(text) {
 }
 
 /**
- * Add "House Number" column extracted from a text column
+ * Extract house numbers into a new column
  *
  * @param {Array} headers
  * @param {Array} rows
- * @param {String} sourceColumnName
  * @returns {Object}
  */
-function extractHouseNumbers(headers, rows, sourceColumnName) {
-  const sourceIndex = findColumnIndex(headers, sourceColumnName);
+function extractHouseNumbers(headers, rows) {
+  const sourceIndex = findAddressColumnIndex(headers);
 
+  // If no address column found, do nothing safely
   if (sourceIndex === -1) {
-    throw new Error(`Column "${sourceColumnName}" not found`);
+    return {
+      headers,
+      rows
+    };
+  }
+
+  // Prevent duplicate column
+  if (headers.map(h => h.toLowerCase()).includes("house number")) {
+    return {
+      headers,
+      rows
+    };
   }
 
   const newHeaders = [...headers, "House Number"];
 
   const newRows = rows.map(row => {
-    const text = row[sourceIndex];
-    const houseNumber = extractHouseNumber(text);
+    const houseNumber = extractHouseNumber(row[sourceIndex]);
     return [...row, houseNumber];
   });
 
