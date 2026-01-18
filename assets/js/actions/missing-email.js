@@ -1,5 +1,5 @@
 // ===================================
-// ACTION: FIND CONTACTS MISSING EMAIL
+// ACTION: REMOVE ROWS MISSING EMAIL (SAFE V1)
 // File: missing-email.js
 // ===================================
 
@@ -16,57 +16,50 @@ function findEmailColumns(headers) {
 /**
  * Check if a row has at least one email
  */
-function hasEmail(row, emailIndexes) {
+function rowHasEmail(row, emailIndexes) {
   return emailIndexes.some(
-    idx => row[idx] && row[idx].trim() !== ""
+    idx => row[idx] && row[idx].toString().trim() !== ""
   );
 }
 
 /**
- * Core logic:
- * Split contacts into
- * - missing email
- * - has email
+ * Remove rows missing email
+ *
+ * @param {Array} headers
+ * @param {Array} rows
+ * @returns {Object}
  */
-function findContactsMissingEmail(headers, rows) {
+function removeMissingEmail(headers, rows) {
   const emailIndexes = findEmailColumns(headers);
 
-  const missingEmailRows = [];
-  const hasEmailRows = [];
+  // ✅ SAFE EXIT — no email column found
+  if (!emailIndexes.length) {
+    return {
+      headers,
+      withEmail: rows,
+      withoutEmail: [],
+      emailColumnCount: 0
+    };
+  }
+
+  const withEmail = [];
+  const withoutEmail = [];
 
   rows.forEach(row => {
-    hasEmail(row, emailIndexes)
-      ? hasEmailRows.push(row)
-      : missingEmailRows.push(row);
+    rowHasEmail(row, emailIndexes)
+      ? withEmail.push(row)
+      : withoutEmail.push(row);
   });
 
   return {
     headers,
-    missingEmailRows,
-    hasEmailRows,
+    withEmail,
+    withoutEmail,
     emailColumnCount: emailIndexes.length
   };
 }
 
-/**
- * CSV download helper
- */
-function downloadMissingEmailCSV(headers, rows, filename) {
-  const csv = [headers, ...rows].map(r => r.join(",")).join("\n");
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
 // ===================================
-// EXPORT (for Prompt Tool / UI)
+// EXPORT (FOR PROMPT ENGINE)
 // ===================================
-window.findContactsMissingEmail = findContactsMissingEmail;
-window.downloadMissingEmailCSV = downloadMissingEmailCSV;
+window.removeMissingEmail = removeMissingEmail;
