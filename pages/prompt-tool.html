@@ -4,65 +4,91 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Prompt-Based CSV Tool | CSV Automation Tools</title>
+  <title>Prompt-Based CSV Tool | CSV Contact Tools</title>
 
+  <meta
+    name="description"
+    content="Describe what you want to do with your CSV file and let the system process it."
+  />
+
+  <!-- Main CSS -->
   <link rel="stylesheet" href="../assets/css/main.css" />
 </head>
 
 <body>
 
+<!-- HEADER -->
 <header class="tool-header">
   <a href="../index.html" class="back-home">← Home</a>
   <h1>Prompt-Based CSV Tool</h1>
-  <p>Describe what you want to do with your CSV. We’ll handle the rest.</p>
+  <p>
+    Describe what you want to do with your CSV file.
+    The system will apply the right actions.
+  </p>
 </header>
 
 <main class="tool-container">
 
-  <!-- PROMPT -->
+  <!-- PROMPT INPUT -->
   <div class="card">
     <h2>What do you want to do?</h2>
-    <p>Example: “Remove rows missing email and remove duplicates.”</p>
+    <p>Type a clear instruction in plain English.</p>
 
     <textarea
       id="promptInput"
       rows="4"
-      placeholder="Type your instruction here..."
-      style="width:100%; padding:14px; border-radius:10px; border:1px solid #e5e7eb;"
+      placeholder="Example: Remove rows missing email and remove duplicates"
+      style="width:100%; padding:14px; border-radius:10px; border:1px solid #e5e7eb; font-size:1rem;"
     ></textarea>
+
+    <div style="margin-top:10px; color:#6b7280; font-size:0.9rem;">
+      Supported actions (v1):
+      <ul style="margin-top:6px; padding-left:18px;">
+        <li>Remove rows missing email</li>
+        <li>Remove duplicates</li>
+        <li>Split CSV by column (coming)</li>
+        <li>Fix addresses (manual / API later)</li>
+      </ul>
+    </div>
   </div>
 
-  <!-- UPLOAD -->
+  <!-- FILE UPLOAD -->
   <div class="card">
+    <h2>Upload CSV File</h2>
+
     <div class="upload-box">
       <input type="file" id="csvFile" accept=".csv" />
     </div>
   </div>
 
-  <!-- STATUS -->
+  <!-- RUN -->
   <div class="card">
-    <button id="runBtn" class="btn">Run Prompt</button>
+    <button id="runBtn" class="btn enabled">Run Prompt</button>
 
-    <div id="statusBox" style="margin-top:20px; display:none;">
+    <!-- STATUS -->
+    <div id="statusBox" style="display:none; margin-top:20px;">
       <strong>Status:</strong>
-      <p id="statusText">Processing…</p>
+      <span id="statusText">—</span>
     </div>
   </div>
 
-  <!-- RESULT -->
+  <!-- RESULTS -->
   <div class="card" id="resultCard" style="display:none;">
-    <h2>Result</h2>
-    <p id="resultSummary"></p>
+    <h2>Results</h2>
 
-    <div class="downloads">
-      <button id="downloadResult" class="download-btn">
-        Download Result CSV
+    <p id="resultSummary" style="white-space:pre-line;"></p>
+
+    <div class="downloads" style="margin-top:20px;">
+      <button id="downloadResult" class="download-btn enabled">
+        Download Processed CSV
       </button>
     </div>
   </div>
 
 </main>
 
-<script src="../assets/js/prompt-engine.js"></script>
+<!-- JS -->
+<script src="../assets/js/prompt-tool.js"></script>
+
 </body>
 </html>
