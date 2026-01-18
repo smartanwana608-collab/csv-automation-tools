@@ -56,6 +56,17 @@
     <ul id="detectedActionsList"></ul>
   </div>
 
+  <!-- ACTION PARAMETERS -->
+  <div class="card" id="actionParamsCard" style="display:none;">
+    <h2>Action Parameters</h2>
+
+    <div id="actionParamsFields"></div>
+
+    <p style="font-size:0.9rem; color:#6b7280; margin-top:10px;">
+      These actions require additional information before running.
+    </p>
+  </div>
+
   <!-- FILE -->
   <div class="card">
     <h2>Upload CSV</h2>
@@ -74,8 +85,9 @@
       <!-- Progress -->
       <div style="margin-top:10px;">
         <div style="background:#e5e7eb; border-radius:8px; overflow:hidden;">
-          <div id="progressBar"
-               style="height:10px; width:0%; background:#2563eb; transition:width 0.3s;">
+          <div
+            id="progressBar"
+            style="height:10px; width:0%; background:#2563eb; transition:width 0.3s;">
           </div>
         </div>
         <small id="progressPercent">0%</small>
