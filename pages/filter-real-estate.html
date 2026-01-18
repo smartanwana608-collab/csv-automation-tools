@@ -110,6 +110,25 @@ main {
   opacity: 1;
   cursor: pointer;
 }
+
+/* Progress bar */
+#progressWrap {
+  display: none;
+  margin-top: 20px;
+}
+
+#progressBarBg {
+  background: #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#progressBar {
+  height: 12px;
+  width: 0%;
+  background: #2563eb;
+  transition: width 0.15s ease;
+}
 </style>
 </head>
 
@@ -139,6 +158,14 @@ main {
 <div class="card">
   <button id="analyzeBtn" class="btn">Analyze CSV</button>
 
+  <!-- Progress -->
+  <div id="progressWrap">
+    <p>Processing: <span id="progressPercent">0%</span></p>
+    <div id="progressBarBg">
+      <div id="progressBar"></div>
+    </div>
+  </div>
+
   <div class="results">
     <div class="result-box">
       <strong id="agentCount">—</strong>
@@ -151,12 +178,8 @@ main {
   </div>
 
   <div class="downloads">
-    <button id="downloadAgents" class="download-btn">
-      Download Agents CSV
-    </button>
-    <button id="downloadOthers" class="download-btn">
-      Download Other Contacts CSV
-    </button>
+    <button id="downloadAgents" class="download-btn">Download Agents CSV</button>
+    <button id="downloadOthers" class="download-btn">Download Other Contacts CSV</button>
   </div>
 </div>
 
@@ -176,11 +199,16 @@ const otherCountEl = document.getElementById("otherCount");
 const downloadAgentsBtn = document.getElementById("downloadAgents");
 const downloadOthersBtn = document.getElementById("downloadOthers");
 
+const progressWrap = document.getElementById("progressWrap");
+const progressBar = document.getElementById("progressBar");
+const progressPercent = document.getElementById("progressPercent");
+
 let headers = [];
+let dataRows = [];
 let agentRows = [];
 let otherRows = [];
 
-const keywords = ["realtor","realty","broker","kw","coldwell","century","sotheby"];
+const keywords = ["realtor","realty","broker","brokerage","kw","coldwell","century","sotheby","estate"];
 
 fileInput.addEventListener("change", () => {
   const file = fileInput.files[0];
@@ -192,39 +220,73 @@ fileInput.addEventListener("change", () => {
   reader.onload = e => {
     const rows = e.target.result.trim().split("\n").map(r => r.split(","));
     headers = rows[0];
-    const data = rows.slice(1);
+    dataRows = rows.slice(1);
 
-    rowCountEl.textContent = "Total rows: " + data.length;
+    rowCountEl.textContent = "Total rows: " + dataRows.length;
     columnCountEl.textContent = "Detected columns: " + headers.length;
 
     analyzeBtn.classList.add("enabled");
+    analyzeBtn.onclick = analyzeCSV;
+  };
+  reader.readAsText(file);
+});
 
-    analyzeBtn.onclick = () => {
-      agentRows = [];
-      otherRows = [];
+function analyzeCSV() {
+  agentRows = [];
+  otherRows = [];
 
-      data.forEach(row => {
-        const text = row.join(" ").toLowerCase();
-        keywords.some(k => text.includes(k))
-          ? agentRows.push(row)
-          : otherRows.push(row);
-      });
+  progressWrap.style.display = "block";
+  progressBar.style.width = "0%";
+  progressPercent.textContent = "0%";
 
+  analyzeBtn.textContent = "Analyzing…";
+  analyzeBtn.disabled = true;
+
+  const emailIndexes = headers
+    .map((h, i) => ({ h: h.toLowerCase(), i }))
+    .filter(col => col.h.includes("email"))
+    .map(col => col.i);
+
+  let processed = 0;
+  const total = dataRows.length;
+  const CHUNK = 500;
+
+  function processChunk() {
+    const end = Math.min(processed + CHUNK, total);
+
+    for (let i = processed; i < end; i++) {
+      const row = dataRows[i];
+      const isAgent = emailIndexes.some(idx =>
+        row[idx] && keywords.some(k => row[idx].toLowerCase().includes(k))
+      );
+      isAgent ? agentRows.push(row) : otherRows.push(row);
+    }
+
+    processed = end;
+    const percent = Math.round((processed / total) * 100);
+    progressBar.style.width = percent + "%";
+    progressPercent.textContent = percent + "%";
+
+    if (processed < total) {
+      requestAnimationFrame(processChunk);
+    } else {
       agentCountEl.textContent = agentRows.length;
       otherCountEl.textContent = otherRows.length;
 
       downloadAgentsBtn.classList.add("enabled");
       downloadOthersBtn.classList.add("enabled");
-    };
-  };
-  reader.readAsText(file);
-});
+
+      analyzeBtn.textContent = "Analysis Complete";
+    }
+  }
+
+  processChunk();
+}
 
 function downloadCSV(filename, rows) {
   const csv = [headers, ...rows].map(r => r.join(",")).join("\n");
   const blob = new Blob([csv], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
-
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
