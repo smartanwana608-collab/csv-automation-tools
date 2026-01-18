@@ -1,5 +1,5 @@
 // ======================
-// PROMPT ENGINE — STABLE UX V1
+// PROMPT ENGINE — STABLE V1
 // ======================
 
 // DOM
@@ -9,6 +9,8 @@ const runBtn = document.getElementById("runBtn");
 
 const statusBox = document.getElementById("statusBox");
 const statusText = document.getElementById("statusText");
+const progressBar = document.getElementById("progressBar");
+const progressPercent = document.getElementById("progressPercent");
 
 const detectedActionsCard = document.getElementById("detectedActionsCard");
 const detectedActionsList = document.getElementById("detectedActionsList");
@@ -38,7 +40,6 @@ function downloadCSV(filename, headers, rows) {
   const csv = [headers, ...rows].map(r => r.join(",")).join("\n");
   const blob = new Blob([csv], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
-
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
@@ -80,31 +81,36 @@ function renderCSVPreview(tableEl, headers, rows, limit = 10) {
 }
 
 // ======================
-// PROMPT DETECTION
+// PROMPT DETECTOR
 // ======================
 function detectActions(prompt) {
   const p = prompt.toLowerCase();
+
   return {
     filterRealEstate: p.includes("real estate"),
     removeMissingEmail: p.includes("missing email"),
     removeDuplicates: p.includes("duplicate"),
     extractHouseNumbers: p.includes("house"),
+    createColumn: p.includes("create column"),
   };
 }
 
 // ======================
-// ACTION UI
+// ACTION LIST UI
 // ======================
 function renderDetectedActions(actions) {
   detectedActionsList.innerHTML = "";
+
   const map = {
     filterRealEstate: "Filter real estate agents",
     removeMissingEmail: "Remove rows missing email",
     removeDuplicates: "Remove duplicate contacts",
     extractHouseNumbers: "Extract house numbers",
+    createColumn: "Create a new column",
   };
 
   let found = false;
+
   Object.keys(actions).forEach(key => {
     if (actions[key]) {
       found = true;
@@ -115,6 +121,7 @@ function renderDetectedActions(actions) {
   });
 
   detectedActionsCard.style.display = found ? "block" : "none";
+  return found;
 }
 
 // ======================
@@ -138,47 +145,83 @@ fileInput.addEventListener("change", updateRunButton);
 runBtn.addEventListener("click", () => {
   const prompt = promptInput.value.trim();
   const file = fileInput.files[0];
-  if (!prompt || !file) return;
 
+  if (!prompt) {
+    alert("Please write a prompt before uploading or running.");
+    return;
+  }
+
+  if (!file) {
+    alert("Please upload a CSV file.");
+    return;
+  }
+
+  const actions = detectActions(prompt);
+  const hasActions = renderDetectedActions(actions);
+
+  if (!hasActions) {
+    alert("No valid actions detected in your prompt.");
+    return;
+  }
+
+  // Reset UI
   runBtn.disabled = true;
+  runBtn.classList.remove("enabled");
+
   statusBox.style.display = "block";
-  statusText.textContent = "Reading CSV file…";
+  statusText.textContent = "Reading CSV…";
+  progressBar.style.width = "20%";
+  progressPercent.textContent = "20%";
 
   const reader = new FileReader();
   reader.onload = e => {
     parseCSV(e.target.result);
 
-    renderCSVPreview(csvPreviewTable, headers, rows);
     previewCard.style.display = "block";
+    renderCSVPreview(csvPreviewTable, headers, rows);
 
     statusText.textContent = "Applying selected actions…";
+    progressBar.style.width = "60%";
+    progressPercent.textContent = "60%";
 
-    const actions = detectActions(prompt);
     finalRows = [...rows];
 
     if (actions.filterRealEstate) {
       finalRows = window.filterRealEstateAgents(headers, finalRows).agents;
     }
+
     if (actions.removeMissingEmail) {
       finalRows = window.removeMissingEmail(headers, finalRows).withEmail;
     }
+
     if (actions.removeDuplicates) {
       finalRows = window.removeDuplicates(finalRows);
     }
+
     if (actions.extractHouseNumbers) {
       finalRows = window.extractHouseNumbers(headers, finalRows).rows;
     }
 
-    // ✅ FINISH
-    statusText.textContent = "Completed";
+    statusText.textContent = "Finalizing results…";
+    progressBar.style.width = "90%";
+    progressPercent.textContent = "90%";
 
     resultSummary.textContent =
       `Columns detected: ${headers.length}\n` +
       `Original rows: ${rows.length}\n` +
-      `Rows after actions: ${finalRows.length}`;
+      `Final rows: ${finalRows.length}`;
 
     resultCard.style.display = "block";
+
+    progressBar.style.width = "100%";
+    progressPercent.textContent = "100%";
+    statusText.textContent = "Completed";
+
+    downloadBtn.disabled = false;
+    downloadBtn.classList.add("enabled");
+
     runBtn.disabled = false;
+    runBtn.classList.add("enabled");
   };
 
   reader.readAsText(file);
