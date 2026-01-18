@@ -47,7 +47,6 @@ main {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
-  margin-top: 20px;
 }
 
 .info-item {
@@ -111,7 +110,7 @@ main {
   cursor: pointer;
 }
 
-/* ===== KEYWORD EDITOR ===== */
+/* KEYWORD EDITOR */
 .keyword-list {
   display: flex;
   flex-wrap: wrap;
@@ -124,57 +123,38 @@ main {
   padding: 8px 12px;
   border-radius: 999px;
   font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .keyword button {
   background: none;
   border: none;
+  margin-left: 6px;
   cursor: pointer;
-  font-weight: bold;
-  color: #6b7280;
 }
 
-.keyword-add {
-  display: flex;
-  gap: 10px;
-}
-
-.keyword-add input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 8px;
+/* PREVIEW TABLE */
+.table-wrap {
+  overflow-x: auto;
   border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  margin-top: 10px;
 }
 
-.keyword-add button {
-  background: #2563eb;
-  color: #fff;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
 }
 
-/* Progress bar */
-#progressWrap {
-  display: none;
-  margin-top: 20px;
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
 }
 
-#progressBarBg {
-  background: #e5e7eb;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-#progressBar {
-  height: 12px;
-  width: 0%;
-  background: #2563eb;
-  transition: width 0.15s ease;
+th {
+  background: #f9fafb;
+  font-weight: 600;
 }
 </style>
 </head>
@@ -188,12 +168,14 @@ main {
 
 <main>
 
+<!-- Upload -->
 <div class="card">
   <div class="upload-box">
     <input type="file" id="csvFile" accept=".csv" />
   </div>
 </div>
 
+<!-- File info -->
 <div class="card">
   <div class="file-info">
     <div class="info-item" id="fileName">File name: —</div>
@@ -202,43 +184,46 @@ main {
   </div>
 </div>
 
-<!-- ✅ KEYWORD EDITOR CARD -->
+<!-- Keyword editor -->
 <div class="card">
   <h2>Detection Keywords</h2>
-  <p>Edit the keywords used to identify real estate agents (email-based).</p>
-
   <div id="keywordList" class="keyword-list"></div>
-
-  <div class="keyword-add">
-    <input type="text" id="newKeyword" placeholder="Add keyword (e.g. realtor)" />
-    <button id="addKeywordBtn">Add</button>
-  </div>
+  <input id="newKeyword" placeholder="Add keyword" />
+  <button id="addKeywordBtn">Add</button>
 </div>
 
+<!-- Analysis -->
 <div class="card">
   <button id="analyzeBtn" class="btn">Analyze CSV</button>
 
-  <div id="progressWrap">
-    <p>Processing: <span id="progressPercent">0%</span></p>
-    <div id="progressBarBg">
-      <div id="progressBar"></div>
-    </div>
-  </div>
-
   <div class="results">
     <div class="result-box">
-      <strong id="agentCount">—</strong>
-      Real Estate Agents
+      <strong id="agentCount">—</strong> Agents
     </div>
     <div class="result-box">
-      <strong id="otherCount">—</strong>
-      Other Contacts
+      <strong id="otherCount">—</strong> Others
     </div>
   </div>
 
   <div class="downloads">
-    <button id="downloadAgents" class="download-btn">Download Agents CSV</button>
-    <button id="downloadOthers" class="download-btn">Download Other Contacts CSV</button>
+    <button id="downloadAgents" class="download-btn">Download Agents</button>
+    <button id="downloadOthers" class="download-btn">Download Others</button>
+  </div>
+</div>
+
+<!-- ✅ PREVIEW RESULTS CARD (NEW) -->
+<div class="card">
+  <h2>Preview Results</h2>
+  <p>Showing first 10 rows from each group.</p>
+
+  <h3>Real Estate Agents</h3>
+  <div class="table-wrap">
+    <table id="agentsPreview"></table>
+  </div>
+
+  <h3 style="margin-top:30px;">Other Contacts</h3>
+  <div class="table-wrap">
+    <table id="othersPreview"></table>
   </div>
 </div>
 
@@ -248,145 +233,72 @@ main {
 const fileInput = document.getElementById("csvFile");
 const analyzeBtn = document.getElementById("analyzeBtn");
 
-const fileNameEl = document.getElementById("fileName");
-const rowCountEl = document.getElementById("rowCount");
-const columnCountEl = document.getElementById("columnCount");
-
 const agentCountEl = document.getElementById("agentCount");
 const otherCountEl = document.getElementById("otherCount");
 
-const downloadAgentsBtn = document.getElementById("downloadAgents");
-const downloadOthersBtn = document.getElementById("downloadOthers");
+const agentsPreview = document.getElementById("agentsPreview");
+const othersPreview = document.getElementById("othersPreview");
 
-const progressWrap = document.getElementById("progressWrap");
-const progressBar = document.getElementById("progressBar");
-const progressPercent = document.getElementById("progressPercent");
-
-/* ===== KEYWORDS (LIVE EDITABLE) ===== */
-let keywords = [
-  "realtor","realty","broker","brokerage","kw","coldwell","century","sotheby","estate"
-];
-
-const keywordListEl = document.getElementById("keywordList");
-const newKeywordInput = document.getElementById("newKeyword");
-const addKeywordBtn = document.getElementById("addKeywordBtn");
-
-function renderKeywords() {
-  keywordListEl.innerHTML = "";
-  keywords.forEach((kw, index) => {
-    const el = document.createElement("div");
-    el.className = "keyword";
-    el.innerHTML = `${kw} <button onclick="removeKeyword(${index})">×</button>`;
-    keywordListEl.appendChild(el);
-  });
-}
-
-function removeKeyword(index) {
-  keywords.splice(index, 1);
-  renderKeywords();
-}
-
-addKeywordBtn.onclick = () => {
-  const value = newKeywordInput.value.trim().toLowerCase();
-  if (!value || keywords.includes(value)) return;
-  keywords.push(value);
-  newKeywordInput.value = "";
-  renderKeywords();
-};
-
-renderKeywords();
-
-/* ===== CSV LOGIC ===== */
 let headers = [];
 let dataRows = [];
 let agentRows = [];
 let otherRows = [];
 
-fileInput.onchange = () => {
-  const file = fileInput.files[0];
-  if (!file) return;
+let keywords = ["realtor","realty","broker","brokerage","kw","coldwell","century","sotheby","estate"];
 
-  fileNameEl.textContent = "File name: " + file.name;
-
+fileInput.onchange = e => {
   const reader = new FileReader();
-  reader.onload = e => {
-    const rows = e.target.result.trim().split("\n").map(r => r.split(","));
+  reader.onload = ev => {
+    const rows = ev.target.result.trim().split("\n").map(r => r.split(","));
     headers = rows[0];
     dataRows = rows.slice(1);
-
-    rowCountEl.textContent = "Total rows: " + dataRows.length;
-    columnCountEl.textContent = "Detected columns: " + headers.length;
-
     analyzeBtn.classList.add("enabled");
-    analyzeBtn.onclick = analyzeCSV;
   };
-  reader.readAsText(file);
+  reader.readAsText(e.target.files[0]);
 };
 
-function analyzeCSV() {
+analyzeBtn.onclick = () => {
   agentRows = [];
   otherRows = [];
 
-  progressWrap.style.display = "block";
-  analyzeBtn.textContent = "Analyzing…";
-  analyzeBtn.disabled = true;
-
   const emailIndexes = headers
-    .map((h, i) => ({ h: h.toLowerCase(), i }))
-    .filter(col => col.h.includes("email"))
-    .map(col => col.i);
+    .map((h,i)=>h.toLowerCase().includes("email")?i:null)
+    .filter(i=>i!==null);
 
-  let processed = 0;
-  const total = dataRows.length;
-  const CHUNK = 500;
+  dataRows.forEach(r=>{
+    const isAgent = emailIndexes.some(i =>
+      keywords.some(k => r[i]?.toLowerCase().includes(k))
+    );
+    isAgent ? agentRows.push(r) : otherRows.push(r);
+  });
 
-  function processChunk() {
-    const end = Math.min(processed + CHUNK, total);
-    for (let i = processed; i < end; i++) {
-      const row = dataRows[i];
-      const isAgent = emailIndexes.some(idx =>
-        row[idx] && keywords.some(k => row[idx].toLowerCase().includes(k))
-      );
-      isAgent ? agentRows.push(row) : otherRows.push(row);
-    }
+  agentCountEl.textContent = agentRows.length;
+  otherCountEl.textContent = otherRows.length;
 
-    processed = end;
-    const percent = Math.round((processed / total) * 100);
-    progressBar.style.width = percent + "%";
-    progressPercent.textContent = percent + "%";
-
-    if (processed < total) {
-      requestAnimationFrame(processChunk);
-    } else {
-      agentCountEl.textContent = agentRows.length;
-      otherCountEl.textContent = otherRows.length;
-      downloadAgentsBtn.classList.add("enabled");
-      downloadOthersBtn.classList.add("enabled");
-      analyzeBtn.textContent = "Analysis Complete";
-    }
-  }
-
-  processChunk();
-}
-
-function downloadCSV(filename, rows) {
-  const csv = [headers, ...rows].map(r => r.join(",")).join("\n");
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-downloadAgentsBtn.onclick = () => {
-  if (agentRows.length) downloadCSV("real_estate_agents.csv", agentRows);
+  renderPreview(agentsPreview, agentRows);
+  renderPreview(othersPreview, otherRows);
 };
 
-downloadOthersBtn.onclick = () => {
-  if (otherRows.length) downloadCSV("other_contacts.csv", otherRows);
-};
+function renderPreview(table, rows) {
+  table.innerHTML = "";
+  const head = document.createElement("tr");
+  headers.forEach(h=>{
+    const th=document.createElement("th");
+    th.textContent=h;
+    head.appendChild(th);
+  });
+  table.appendChild(head);
+
+  rows.slice(0,10).forEach(r=>{
+    const tr=document.createElement("tr");
+    r.forEach(c=>{
+      const td=document.createElement("td");
+      td.textContent=c;
+      tr.appendChild(td);
+    });
+    table.appendChild(tr);
+  });
+}
 </script>
 
 </body>
