@@ -1,5 +1,6 @@
 // ===================================
-// REMOVE DUPLICATES (ACTION)
+// REMOVE DUPLICATES (ACTION) — SAFE V1
+// File: remove-duplicates.js
 // ===================================
 
 /**
@@ -11,15 +12,24 @@
  * @returns {Object}
  */
 function removeDuplicates(headers, rows) {
+  // 🛡️ Defensive defaults
+  if (!Array.isArray(rows)) {
+    return {
+      headers: headers || [],
+      rows: [],
+      removedCount: 0
+    };
+  }
+
   const seen = new Set();
   const uniqueRows = [];
-  const removedRows = [];
+  let removedCount = 0;
 
   rows.forEach(row => {
     const key = row.join("||");
 
     if (seen.has(key)) {
-      removedRows.push(row);
+      removedCount++;
     } else {
       seen.add(key);
       uniqueRows.push(row);
@@ -27,9 +37,9 @@ function removeDuplicates(headers, rows) {
   });
 
   return {
-    headers,
+    headers: headers || [],
     rows: uniqueRows,
-    removedCount: removedRows.length
+    removedCount
   };
 }
 
