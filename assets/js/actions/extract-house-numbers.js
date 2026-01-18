@@ -3,51 +3,47 @@
 // ===================================
 
 /**
- * Try to detect a notes-like column
+ * Find column index by name (case-insensitive)
  */
-function findNotesColumn(headers) {
-  const keywords = ["note", "address", "remark", "description", "comment"];
-
-  return headers.findIndex(h =>
-    keywords.some(k => h.toLowerCase().includes(k))
+function findColumnIndex(headers, columnName) {
+  return headers.findIndex(
+    h => h.toLowerCase().trim() === columnName.toLowerCase().trim()
   );
 }
 
 /**
  * Extract house number from text
+ * Examples:
+ *  - "123 Main Street" → 123
+ *  - "45B Elm Ave" → 45B
  */
 function extractHouseNumber(text) {
   if (!text) return "";
 
-  // Matches numbers like:
-  // 123, 12B, 45-47, 8A
-  const match = text.match(/\b\d+[a-zA-Z]?(?:-\d+)?\b/);
+  const match = text.toString().match(/\b\d+[a-zA-Z]?\b/);
   return match ? match[0] : "";
 }
 
 /**
- * Main action
+ * Add "House Number" column extracted from a text column
  *
  * @param {Array} headers
  * @param {Array} rows
+ * @param {String} sourceColumnName
  * @returns {Object}
  */
-function extractHouseNumbers(headers, rows) {
-  const notesIndex = findNotesColumn(headers);
+function extractHouseNumbers(headers, rows, sourceColumnName) {
+  const sourceIndex = findColumnIndex(headers, sourceColumnName);
 
-  // If no notes column, return original data unchanged
-  if (notesIndex === -1) {
-    return {
-      headers,
-      rows
-    };
+  if (sourceIndex === -1) {
+    throw new Error(`Column "${sourceColumnName}" not found`);
   }
 
-  const newHeaders = [...headers, "house_number"];
+  const newHeaders = [...headers, "House Number"];
 
   const newRows = rows.map(row => {
-    const notesText = row[notesIndex];
-    const houseNumber = extractHouseNumber(notesText);
+    const text = row[sourceIndex];
+    const houseNumber = extractHouseNumber(text);
     return [...row, houseNumber];
   });
 
