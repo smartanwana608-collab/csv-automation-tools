@@ -1,5 +1,5 @@
 // ======================
-// PROMPT ENGINE — FINAL V5 (SMART PARAMETERS)
+// PROMPT ENGINE — FINAL V6 (SPLIT BY COLUMN)
 // ======================
 
 // DOM
@@ -86,11 +86,12 @@ function detectActions(prompt) {
     removeDuplicates: p.includes("duplicate"),
     extractHouseNumbers: p.includes("house"),
     createColumn: p.includes("new column"),
+    splitByColumn: p.includes("split"),
   };
 }
 
 // ======================
-// ACTION LIST UI
+// DETECTED ACTIONS UI
 // ======================
 function renderDetectedActions(actions) {
   detectedActionsList.innerHTML = "";
@@ -101,6 +102,7 @@ function renderDetectedActions(actions) {
     removeDuplicates: "Remove duplicate contacts",
     extractHouseNumbers: "Extract house numbers",
     createColumn: "Create a new column",
+    splitByColumn: "Split CSV by column",
   };
 
   let found = false;
@@ -126,12 +128,12 @@ function renderActionParams(actions) {
 
   let needsParams = false;
 
-  // Extract House Numbers → needs address column
-  if (actions.extractHouseNumbers) {
+  // SPLIT BY COLUMN
+  if (actions.splitByColumn) {
     needsParams = true;
 
     const label = document.createElement("label");
-    label.textContent = "Select address column:";
+    label.textContent = "Select column to split by:";
     label.style.display = "block";
 
     const select = document.createElement("select");
@@ -146,34 +148,12 @@ function renderActionParams(actions) {
     });
 
     select.addEventListener("change", () => {
-      actionParams.addressColumn = select.value;
+      actionParams.splitColumn = select.value;
       updateRunButton();
     });
 
     actionParamsFields.appendChild(label);
     actionParamsFields.appendChild(select);
-  }
-
-  // Create Column → needs column name
-  if (actions.createColumn) {
-    needsParams = true;
-
-    const label = document.createElement("label");
-    label.textContent = "New column name:";
-    label.style.display = "block";
-
-    const input = document.createElement("input");
-    input.placeholder = "e.g. Source Tag";
-    input.style.width = "100%";
-    input.style.padding = "10px";
-
-    input.addEventListener("input", () => {
-      actionParams.newColumnName = input.value.trim();
-      updateRunButton();
-    });
-
-    actionParamsFields.appendChild(label);
-    actionParamsFields.appendChild(input);
   }
 
   actionParamsCard.style.display = needsParams ? "block" : "none";
@@ -186,11 +166,12 @@ function updateRunButton() {
   const hasPrompt = promptInput.value.trim();
   const hasFile = fileInput.files.length;
 
-  const missingParams =
-    ("extractHouseNumbers" in actionParams && !actionParams.addressColumn) ||
-    ("createColumn" in actionParams && !actionParams.newColumnName);
+  const missingSplit =
+    detectActions(promptInput.value.trim()).splitByColumn &&
+    !actionParams.splitColumn;
 
-  runBtn.disabled = !(hasPrompt && hasFile) || missingParams;
+  runBtn.disabled = !(hasPrompt && hasFile) || missingSplit;
+  runBtn.classList.toggle("enabled", !runBtn.disabled);
 }
 
 // ======================
@@ -203,9 +184,7 @@ promptInput.addEventListener("input", () => {
   updateRunButton();
 });
 
-fileInput.addEventListener("change", () => {
-  updateRunButton();
-});
+fileInput.addEventListener("change", updateRunButton);
 
 // ======================
 // RUN PROMPT
@@ -225,38 +204,26 @@ runBtn.addEventListener("click", () => {
     renderCSVPreview(csvPreviewTable, headers, rows);
 
     finalRows = [...rows];
-
     const actions = detectActions(promptInput.value.trim());
 
-    if (actions.filterRealEstate) {
-      finalRows = window.filterRealEstateAgents(headers, finalRows).agents;
-    }
+    // SPLIT BY COLUMN (SAFE DEFAULT OUTPUT)
+    if (actions.splitByColumn) {
+      const result = window.splitByColumn(headers, finalRows, actionParams.splitColumn);
 
-    if (actions.removeMissingEmail) {
-      finalRows = window.removeMissingEmail(headers, finalRows).withEmail;
-    }
+      // Take the largest group for now
+      const largestGroup = Object.values(result.groups)
+        .sort((a, b) => b.length - a.length)[0];
 
-    if (actions.removeDuplicates) {
-      finalRows = window.removeDuplicates(headers, finalRows).rows;
-    }
-
-    if (actions.extractHouseNumbers) {
-      const res = window.extractHouseNumbers(headers, finalRows);
-      headers = res.headers;
-      finalRows = res.rows;
-    }
-
-    if (actions.createColumn) {
-      const res = window.createNewColumn(headers, finalRows);
-      headers = res.headers;
-      finalRows = res.rows;
+      finalRows = largestGroup || [];
     }
 
     progressBar.style.width = "100%";
     progressPercent.textContent = "100%";
 
     resultSummary.textContent =
-      `Columns: ${headers.length}\nOriginal rows: ${rows.length}\nFinal rows: ${finalRows.length}`;
+      `Columns: ${headers.length}\n` +
+      `Original rows: ${rows.length}\n` +
+      `Final rows: ${finalRows.length}`;
 
     resultCard.style.display = "block";
     downloadBtn.disabled = false;
