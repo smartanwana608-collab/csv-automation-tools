@@ -24,51 +24,19 @@
 
 <main class="tool-container">
 
-  <!-- ================= PROMPT ================= -->
+  <!-- PROMPT -->
   <div class="card">
     <h2>What do you want to do?</h2>
 
     <textarea
       id="promptInput"
       rows="4"
-      placeholder="Example: Remove rows missing email and extract house numbers"
+      placeholder="Example: filter real estate agents"
       style="width:100%; padding:14px; border-radius:10px; border:1px solid #e5e7eb;"
     ></textarea>
-
-    <div style="margin-top:14px;">
-      <strong>You can ask me to:</strong>
-      <ul style="margin-top:8px; padding-left:18px; line-height:1.8;">
-        <li>Create a new column</li>
-        <li>Extract house numbers</li>
-        <li>Fix addresses</li>
-        <li>Filter real estate agents</li>
-        <li>Remove rows missing email</li>
-        <li>Remove duplicate contacts</li>
-        <li>Split CSV by column</li>
-      </ul>
-      <p style="margin-top:8px; font-size:0.9rem; color:#6b7280;">
-        Tip: Use the same wording in your prompt.
-      </p>
-    </div>
   </div>
 
-  <!-- ================= DETECTED ACTIONS ================= -->
-  <div class="card" id="detectedActionsCard" style="display:none;">
-    <h2>Detected Actions</h2>
-    <ul id="detectedActionsList"></ul>
-  </div>
-
-  <!-- ================= ACTION PARAMETERS ================= -->
-  <div class="card" id="actionParamsCard" style="display:none;">
-    <h2>Action Parameters</h2>
-    <div id="actionParamsFields"></div>
-    <p style="font-size:0.9rem; color:#6b7280; margin-top:10px;">
-      These actions require additional information before running.
-      Column lists are detected automatically from your CSV.
-    </p>
-  </div>
-
-  <!-- ================= FILE UPLOAD ================= -->
+  <!-- FILE -->
   <div class="card">
     <h2>Upload CSV</h2>
     <div class="upload-box">
@@ -76,54 +44,27 @@
     </div>
   </div>
 
-  <!-- ================= RUN ================= -->
+  <!-- RUN -->
   <div class="card">
     <button id="runBtn" class="btn" disabled>Run Prompt</button>
 
     <div id="statusBox" style="display:none; margin-top:12px;">
       <strong>Status:</strong> <span id="statusText"></span>
-
-      <div style="margin-top:10px;">
-        <div style="background:#e5e7eb; border-radius:8px; overflow:hidden;">
-          <div
-            id="progressBar"
-            style="height:10px; width:0%; background:#2563eb; transition:width 0.3s;">
-          </div>
-        </div>
-        <small id="progressPercent">0%</small>
-      </div>
     </div>
   </div>
 
-  <!-- ================= PREVIEW ================= -->
-  <div class="card" id="previewCard" style="display:none;">
-    <h2>CSV Preview (First 10 Rows)</h2>
-    <div class="table-wrap">
-      <table id="csvPreviewTable"></table>
-    </div>
-  </div>
-
-  <!-- ================= RESULTS ================= -->
+  <!-- RESULTS -->
   <div class="card" id="resultCard" style="display:none;">
     <h2>Results</h2>
-    <p id="resultSummary" style="white-space:pre-line;"></p>
-    <button id="downloadResult" class="download-btn" disabled>
-      Download Processed CSV
-    </button>
+    <p id="resultSummary"></p>
   </div>
 
 </main>
 
-<!-- ================= ACTION SCRIPTS (✅ FIXED PATHS) ================= -->
-<script src="../assets/js/actions/create-column.js"></script>
-<script src="../assets/js/actions/extract-house-numbers.js"></script>
-<script src="../assets/js/actions/fix-addresses.js"></script>
+<!-- ACTION (ONLY ONE FOR TESTING) -->
 <script src="../assets/js/actions/filter-real-estate.js"></script>
-<script src="../assets/js/actions/remove-missing-email.js"></script>
-<script src="../assets/js/actions/remove-duplicates.js"></script>
-<script src="../assets/js/actions/split-by-column.js"></script>
 
-<!-- ================= PROMPT ENGINE ================= -->
+<!-- PROMPT ENGINE -->
 <script src="../assets/js/prompt-engine.js"></script>
 
 </body>
