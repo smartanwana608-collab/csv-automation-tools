@@ -26,27 +26,43 @@ function isRealEstateAgent(row, emailIndexes) {
   });
 }
 
-// ===== MAIN LOGIC =====
+// ===== MAIN =====
 document.addEventListener("DOMContentLoaded", () => {
   const fileInput = document.querySelector('input[type="file"]');
   const analyzeBtn = document.querySelector(".btn");
+
+  const fileNameEl = document.getElementById("fileName");
+  const rowCountEl = document.getElementById("rowCount");
+  const columnCountEl = document.getElementById("columnCount");
+
   const resultBoxes = document.querySelectorAll(".result-box strong");
 
-  let parsedRows = [];
   let headers = [];
+  let parsedRows = [];
   let agents = [];
   let nonAgents = [];
 
   fileInput.addEventListener("change", () => {
+    if (!fileInput.files.length) return;
+
+    const file = fileInput.files[0];
+
+    fileNameEl.textContent = `File name: ${file.name}`;
+
     analyzeBtn.classList.add("enabled");
     analyzeBtn.disabled = false;
-    analyzeBtn.style.cursor = "pointer";
+    analyzeBtn.textContent = "Analyze CSV";
     analyzeBtn.style.opacity = "1";
+    analyzeBtn.style.cursor = "pointer";
   });
 
   analyzeBtn.addEventListener("click", () => {
     const file = fileInput.files[0];
     if (!file) return;
+
+    analyzeBtn.textContent = "Analyzing…";
+    analyzeBtn.disabled = true;
+    analyzeBtn.style.opacity = "0.6";
 
     const reader = new FileReader();
 
@@ -57,7 +73,9 @@ document.addEventListener("DOMContentLoaded", () => {
       headers = rows[0];
       parsedRows = rows.slice(1);
 
-      // Detect email-related columns
+      rowCountEl.textContent = `Total rows: ${parsedRows.length}`;
+      columnCountEl.textContent = `Detected columns: ${headers.length}`;
+
       const emailIndexes = headers
         .map((h, i) => ({ h: h.toLowerCase(), i }))
         .filter(obj => obj.h.includes("email"))
@@ -74,12 +92,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // Update UI counts
       resultBoxes[0].textContent = agents.length;
       resultBoxes[1].textContent = nonAgents.length;
 
-      console.log("Agents:", agents);
-      console.log("Non-agents:", nonAgents);
+      analyzeBtn.textContent = "Analysis Complete";
     };
 
     reader.readAsText(file);
