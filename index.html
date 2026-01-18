@@ -3,20 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Leadcleer — Turn Messy CSVs Into Clean Leads</title>
 
   <!-- Favicon -->
-  <link
-    rel="icon"
-    type="image/svg+xml"
-    href="data:image/svg+xml,
-    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
-      <rect width='100' height='100' fill='%236b4eff'/>
-      <text x='50%' y='62%' text-anchor='middle' fill='white'
-        font-size='56' font-family='Arial' font-weight='700'>L</text>
-    </svg>"
-  />
+  <link rel="icon" href="data:image/svg+xml,
+  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+    <rect width='100' height='100' fill='%236b4eff'/>
+    <text x='50%' y='62%' text-anchor='middle' fill='white' font-size='56' font-family='Arial'>L</text>
+  </svg>">
 
   <link rel="stylesheet" href="/assets/css/main.css" />
 </head>
@@ -26,11 +20,8 @@
 <!-- ================= NAV ================= -->
 <header class="nav">
   <div class="nav-container">
-    <div class="logo">
-      <span class="logo-dot"></span>
-      <span>Leadcleer</span>
-    </div>
-    <nav>
+    <div class="logo">Leadcleer</div>
+    <nav class="nav-links">
       <a href="#features">Features</a>
       <a href="#tools">Tools</a>
       <a href="#how">How It Works</a>
@@ -45,13 +36,14 @@
     <h1>
       Turn Messy CSVs Into <span>Clean Leads</span>
     </h1>
-    <p>
-      Leadcleer helps you clean, filter, and organize contact data using
-      fast, private, browser-based tools — no uploads required.
+
+    <p class="hero-subtext">
+      Clean, filter, and organize CSV contact data using fast, private,
+      browser-based tools — processed locally in your browser.
     </p>
 
     <div class="hero-actions">
-      <a href="/pages/prompt-tool.html" class="btn primary">
+      <a href="/pages/features.html" class="btn primary">
         Get Started Free
       </a>
       <a href="#tools" class="btn secondary">
@@ -71,21 +63,21 @@
     <div class="feature-card">
       <h3>Clean Contact Data</h3>
       <p>
-        Remove duplicates, fix formatting, and standardize CSV files effortlessly.
+        Remove duplicates, fix formatting, and standardize CSV contact files effortlessly.
       </p>
     </div>
 
     <div class="feature-card">
       <h3>Smart Filtering</h3>
       <p>
-        Identify real estate agents, business emails, or unwanted leads in seconds.
+        Detect real estate agents or unwanted business contacts in seconds.
       </p>
     </div>
 
     <div class="feature-card">
       <h3>Privacy First</h3>
       <p>
-        Your files stay in your browser. No uploads, no storage, no tracking.
+        Files are processed locally in your browser. No storage. No tracking.
       </p>
     </div>
   </div>
@@ -99,7 +91,7 @@
     <div class="tool-card">
       <h3>Prompt-Based CSV Tool</h3>
       <p>
-        Describe what you want to do — Leadcleer handles the rest.
+        Describe what you want to do with your CSV — Leadcleer handles the rest.
       </p>
       <a href="/pages/prompt-tool.html" class="btn primary">
         Open Tool
@@ -109,7 +101,7 @@
     <div class="tool-card">
       <h3>Filter Real Estate Agents</h3>
       <p>
-        Automatically detect and separate real estate contacts.
+        Detect and separate real estate agents while preserving every original column.
       </p>
       <a href="/pages/filter-real-estate.html" class="btn secondary">
         Open Tool
@@ -138,21 +130,10 @@
   </div>
 </section>
 
-<!-- ================= DISCLAIMER ================= -->
-<section class="disclaimer">
-  <p>
-    <strong>Disclaimer:</strong>
-    Leadcleer processes CSV files locally in your browser.
-    We do not store, collect, or transmit uploaded data.
-    You are responsible for compliance with applicable data protection laws.
-  </p>
-</section>
-
 <!-- ================= FOOTER ================= -->
 <footer class="footer" id="contact">
   <div class="footer-container">
 
-    <!-- Brand -->
     <div class="footer-brand">
       <div class="footer-logo">
         <span class="logo-dot"></span>
@@ -163,12 +144,11 @@
       </p>
     </div>
 
-    <!-- Links -->
     <div class="footer-links">
       <div class="footer-column">
         <h4>Product</h4>
-        <a href="/pages/prompt-tool.html">Get Started Free</a>
-        <a href="/pages/filter-real-estate.html">Tools</a>
+        <a href="/pages/features.html">Get Started Free</a>
+        <a href="#tools">Tools</a>
         <a href="#how">How It Works</a>
       </div>
 
