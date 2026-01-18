@@ -39,7 +39,7 @@ body {
   align-items: center;
 }
 
-/* LOGO FIX */
+/* LOGO */
 .logo {
   font-size: 22px;
   font-weight: 800;
@@ -157,18 +157,6 @@ h2 {
   border-radius: 16px;
 }
 
-/* ================= PRO STATE ================= */
-.feature-card.pro {
-  border: 1px dashed #c4b5fd;
-  opacity: 0.85;
-}
-
-.pro-note {
-  font-size: 0.85rem;
-  color: var(--muted);
-  margin: 12px 0;
-}
-
 /* ================= PAGE HERO ================= */
 .page-hero {
   max-width: 900px;
@@ -205,8 +193,9 @@ h2 {
   flex-direction: column;
 }
 
+/* TEXT STACK */
 .feature-card-page h2 {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .feature-desc {
@@ -221,6 +210,15 @@ h2 {
 
 .feature-card-page ul li {
   margin-bottom: 8px;
+}
+
+/* ✅ FIX: BUTTON ALIGNMENT */
+.feature-card-page .btn {
+  margin-top: auto;
+  align-self: center;
+  width: 100%;
+  max-width: 240px;
+  text-align: center;
 }
 
 /* BADGES */
