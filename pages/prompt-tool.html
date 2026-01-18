@@ -24,25 +24,27 @@
 
 <main class="tool-container">
 
-  <!-- PROMPT -->
+  <!-- ================= PROMPT ================= -->
   <div class="card">
     <h2>What do you want to do?</h2>
 
     <textarea
       id="promptInput"
       rows="4"
-      placeholder="Example: Remove rows missing email and remove duplicate contacts"
+      placeholder="Example: Remove rows missing email and extract house numbers"
       style="width:100%; padding:14px; border-radius:10px; border:1px solid #e5e7eb;"
     ></textarea>
 
     <div style="margin-top:14px;">
       <strong>You can ask me to:</strong>
       <ul style="margin-top:8px; padding-left:18px; line-height:1.8;">
+        <li>Create a new column</li>
+        <li>Extract house numbers</li>
+        <li>Fix addresses</li>
         <li>Filter real estate agents</li>
         <li>Remove rows missing email</li>
         <li>Remove duplicate contacts</li>
-        <li>Extract house numbers</li>
-        <li>Create a new column</li>
+        <li>Split CSV by column</li>
       </ul>
       <p style="margin-top:8px; font-size:0.9rem; color:#6b7280;">
         Tip: Use the same wording in your prompt.
@@ -50,13 +52,13 @@
     </div>
   </div>
 
-  <!-- DETECTED ACTIONS -->
+  <!-- ================= DETECTED ACTIONS ================= -->
   <div class="card" id="detectedActionsCard" style="display:none;">
     <h2>Detected Actions</h2>
     <ul id="detectedActionsList"></ul>
   </div>
 
-  <!-- ACTION PARAMETERS (✅ UPDATED TEXT) -->
+  <!-- ================= ACTION PARAMETERS ================= -->
   <div class="card" id="actionParamsCard" style="display:none;">
     <h2>Action Parameters</h2>
 
@@ -68,7 +70,7 @@
     </p>
   </div>
 
-  <!-- FILE -->
+  <!-- ================= FILE UPLOAD ================= -->
   <div class="card">
     <h2>Upload CSV</h2>
     <div class="upload-box">
@@ -76,7 +78,7 @@
     </div>
   </div>
 
-  <!-- RUN -->
+  <!-- ================= RUN ================= -->
   <div class="card">
     <button id="runBtn" class="btn" disabled>Run Prompt</button>
 
@@ -96,7 +98,7 @@
     </div>
   </div>
 
-  <!-- PREVIEW -->
+  <!-- ================= PREVIEW ================= -->
   <div class="card" id="previewCard" style="display:none;">
     <h2>CSV Preview (First 10 Rows)</h2>
     <div class="table-wrap">
@@ -104,9 +106,10 @@
     </div>
   </div>
 
-  <!-- RESULTS -->
+  <!-- ================= RESULTS ================= -->
   <div class="card" id="resultCard" style="display:none;">
     <h2>Results</h2>
+
     <p id="resultSummary" style="white-space:pre-line;"></p>
 
     <button id="downloadResult" class="download-btn" disabled>
@@ -116,14 +119,16 @@
 
 </main>
 
-<!-- ACTIONS -->
+<!-- ================= ACTION SCRIPTS ================= -->
+<script src="../actions/create-column.js"></script>
+<script src="../actions/extract-house-numbers.js"></script>
+<script src="../actions/fix-addresses.js"></script>
 <script src="../actions/filter-real-estate.js"></script>
 <script src="../actions/remove-missing-email.js"></script>
 <script src="../actions/remove-duplicates.js"></script>
-<script src="../actions/extract-house-numbers.js"></script>
-<script src="../actions/create-column.js"></script>
+<script src="../actions/split-by-column.js"></script>
 
-<!-- PROMPT ENGINE -->
+<!-- ================= PROMPT ENGINE ================= -->
 <script src="../assets/js/prompt-engine.js"></script>
 
 </body>
