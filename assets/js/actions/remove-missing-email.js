@@ -1,11 +1,12 @@
 // ===================================
 // REMOVE ROWS MISSING EMAIL (ACTION)
+// File: remove-missing-email.js
 // ===================================
 
 /**
  * Find all email column indexes
  */
-function findEmailColumns(headers) {
+function findEmailColumns(headers = []) {
   return headers
     .map((h, i) => ({ name: h.toLowerCase(), index: i }))
     .filter(col => col.name.includes("email"))
@@ -30,25 +31,54 @@ function rowHasEmail(row, emailIndexes) {
  * @returns {Object}
  */
 function removeMissingEmail(headers, rows) {
-  const emailIndexes = findEmailColumns(headers);
-
-  if (!emailIndexes.length) {
-    throw new Error("No email column found in CSV");
+  // 🛡️ Defensive defaults
+  if (!Array.isArray(rows)) {
+    return {
+      headers: headers || [],
+      rows: [],
+      meta: {
+        kept: 0,
+        removed: 0,
+        emailColumns: 0
+      }
+    };
   }
 
-  const withEmail = [];
-  const withoutEmail = [];
+  const emailIndexes = findEmailColumns(headers);
+
+  // If no email column → return original rows safely
+  if (!emailIndexes.length) {
+    return {
+      headers,
+      rows,
+      meta: {
+        kept: rows.length,
+        removed: 0,
+        emailColumns: 0,
+        warning: "No email column found"
+      }
+    };
+  }
+
+  const kept = [];
+  let removedCount = 0;
 
   rows.forEach(row => {
-    rowHasEmail(row, emailIndexes)
-      ? withEmail.push(row)
-      : withoutEmail.push(row);
+    if (rowHasEmail(row, emailIndexes)) {
+      kept.push(row);
+    } else {
+      removedCount++;
+    }
   });
 
   return {
     headers,
-    withEmail,
-    withoutEmail
+    rows: kept,
+    meta: {
+      kept: kept.length,
+      removed: removedCount,
+      emailColumns: emailIndexes.length
+    }
   };
 }
 
