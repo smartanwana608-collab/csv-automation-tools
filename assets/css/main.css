@@ -559,3 +559,41 @@ PAGE-SCOPED (SAFE)
 .tool-container section {
   padding: 60px 20px;
 }
+/* =====================================================
+FILTER REAL ESTATE – LAYOUT STABILIZATION (SAFE)
+===================================================== */
+
+/* Tool page spacing ONLY */
+.tool-container {
+  margin-top: -40px; /* pulls tool closer to hero */
+}
+
+.tool-card {
+  padding: 48px 28px;
+}
+
+/* Prevent section padding conflicts */
+.tool-container section {
+  padding: 0;
+}
+
+/* Results spacing */
+#resultsPreview {
+  margin-top: 64px;
+}
+
+/* Results grid spacing */
+#resultsPreview .results-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+
+/* SINGLE source of truth for result cards */
+.result-card {
+  background: linear-gradient(180deg, #0f1430, #090c1a);
+  border-radius: 20px;
+  padding: 32px;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+}
