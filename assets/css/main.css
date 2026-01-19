@@ -551,3 +551,11 @@ FILTER REAL ESTATE – RESULTS GRID (SAFE, SCOPED FIX)
     gap: 40px;
   }
 }
+/* ===============================
+FILTER TOOL – SECTION SPACING FIX
+PAGE-SCOPED (SAFE)
+=============================== */
+
+.tool-container section {
+  padding: 60px 20px;
+}
