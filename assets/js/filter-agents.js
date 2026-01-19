@@ -1,17 +1,23 @@
 const STORAGE_KEY = "csv_agent_keywords";
 
-/* ================= DEFAULT KEYWORDS ================= */
-let keywords = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
+/* =====================================================
+SYSTEM KEYWORDS (INVISIBLE TO USER)
+===================================================== */
+const SYSTEM_KEYWORDS = [
   "remax","sutton","rlp","c21","century","real","realty",
   "exp","kw","coldwell","broker","brokerage","agent","homes"
 ];
 
-const saveKeywords = () =>
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(keywords));
+let userKeywords = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+const saveUserKeywords = () =>
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(userKeywords));
 
 const normalize = v => (v || "").toString().toLowerCase().trim();
 
-/* ================= CSV PARSER ================= */
+/* =====================================================
+CSV PARSER
+===================================================== */
 function parseCSV(text) {
   const rows = [];
   let row = [], val = "", inQuotes = false;
@@ -44,17 +50,19 @@ function parseCSV(text) {
   return rows;
 }
 
-/* ================= UI HELPERS ================= */
-function renderKeywords(container) {
+/* =====================================================
+UI HELPERS
+===================================================== */
+function renderUserKeywords(container) {
   container.innerHTML = "";
-  keywords.forEach((k, i) => {
+  userKeywords.forEach((k, i) => {
     const chip = document.createElement("span");
     chip.className = "keyword-chip";
-    chip.innerHTML = `${k} ✕`;
+    chip.textContent = k + " ×";
     chip.onclick = () => {
-      keywords.splice(i, 1);
-      saveKeywords();
-      renderKeywords(container);
+      userKeywords.splice(i, 1);
+      saveUserKeywords();
+      renderUserKeywords(container);
     };
     container.appendChild(chip);
   });
@@ -62,8 +70,12 @@ function renderKeywords(container) {
 
 function renderPreview(table, headers, rows) {
   table.innerHTML = "";
+
   if (!rows.length) {
-    table.innerHTML = "<tbody><tr><td>No records to preview</td></tr></tbody>";
+    table.innerHTML = `
+      <tbody>
+        <tr><td>No records to preview</td></tr>
+      </tbody>`;
     return;
   }
 
@@ -72,14 +84,13 @@ function renderPreview(table, headers, rows) {
       <tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>
     </thead>
     <tbody>
-      ${rows.slice(0,5).map(r =>
+      ${rows.slice(0, 5).map(r =>
         `<tr>${r.map(v => `<td>${v || ""}</td>`).join("")}</tr>`
       ).join("")}
     </tbody>
   `;
 }
 
-/* ================= DOWNLOAD ================= */
 function downloadCSV(filename, headers, rows) {
   const escape = v => `"${(v ?? "").toString().replace(/"/g, '""')}"`;
   const csv = [
@@ -94,7 +105,9 @@ function downloadCSV(filename, headers, rows) {
   a.click();
 }
 
-/* ================= MAIN ================= */
+/* =====================================================
+MAIN
+===================================================== */
 document.addEventListener("DOMContentLoaded", () => {
   const $ = id => document.getElementById(id);
 
@@ -121,52 +134,80 @@ document.addEventListener("DOMContentLoaded", () => {
   const addKeywordBtn = $("addKeywordBtn");
   const newKeywordInput = $("newKeyword");
 
-  let parsedRows = [];
+  const modal = $("disclaimerModal");
+  const accept = $("disclaimerAccept");
+  const cancel = $("disclaimerCancel");
+
   let headers = [];
+  let rows = [];
+  let disclaimerAccepted = false;
 
   analyzeBtn.disabled = true;
-  renderKeywords(keywordList);
+  renderUserKeywords(keywordList);
 
-  /* ===== FILE UPLOAD ===== */
+  /* ================= DISCLAIMER ================= */
+  accept.onclick = () => {
+    disclaimerAccepted = true;
+    modal.classList.remove("show");
+  };
+
+  cancel.onclick = () => {
+    modal.classList.remove("show");
+    fileInput.value = "";
+    analyzeBtn.disabled = true;
+  };
+
+  /* ================= FILE UPLOAD ================= */
   fileInput.onchange = () => {
     const file = fileInput.files[0];
     if (!file) return;
 
+    modal.classList.add("show");
+
     const reader = new FileReader();
     reader.onload = e => {
       const parsed = parseCSV(e.target.result);
-      headers = parsed[0];
-      parsedRows = parsed.slice(1);
+      headers = parsed[0] || [];
+      rows = parsed.slice(1);
 
-      fileNameEl.textContent = file.name;
-      rowCountEl.textContent = parsedRows.length;
-      columnCountEl.textContent = headers.length;
+      fileNameEl.textContent = `File: ${file.name}`;
+      rowCountEl.textContent = `Rows: ${rows.length}`;
+      columnCountEl.textContent = `Columns: ${headers.length}`;
 
       analyzeBtn.disabled = false;
     };
     reader.readAsText(file);
   };
 
-  /* ===== ADD KEYWORD ===== */
+  /* ================= ADD USER KEYWORD ================= */
   addKeywordBtn.onclick = () => {
     const val = normalize(newKeywordInput.value);
-    if (val && !keywords.includes(val)) {
-      keywords.push(val);
-      saveKeywords();
-      renderKeywords(keywordList);
+    if (val && !userKeywords.includes(val)) {
+      userKeywords.push(val);
+      saveUserKeywords();
+      renderUserKeywords(keywordList);
       newKeywordInput.value = "";
     }
   };
 
-  /* ===== ANALYZE ===== */
+  /* ================= ANALYZE ================= */
   analyzeBtn.onclick = () => {
-    const agents = [], possible = [], others = [];
+    if (!disclaimerAccepted) {
+      modal.classList.add("show");
+      return;
+    }
 
-    parsedRows.forEach(r => {
+    const agents = [];
+    const possible = [];
+    const others = [];
+
+    const allKeywords = [...SYSTEM_KEYWORDS, ...userKeywords];
+
+    rows.forEach(r => {
       let score = 0;
 
       r.forEach(cell => {
-        keywords.forEach(k => {
+        allKeywords.forEach(k => {
           if (normalize(cell).includes(k)) score++;
         });
       });
