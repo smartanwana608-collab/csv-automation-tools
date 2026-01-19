@@ -34,7 +34,9 @@ FILTER TOOL
 ================================ -->
 <main class="tool-container">
 
-  <!-- ===== HEADER ===== -->
+  <!-- ===============================
+  TOOL HEADER
+  ================================ -->
   <header class="tool-header">
     <h1>Filter Real Estate Agents</h1>
     <p class="tool-subtitle">
@@ -43,117 +45,147 @@ FILTER TOOL
   </header>
 
   <!-- ===============================
-  STEP 1: UPLOAD
+  STEP 1 — UPLOAD
   ================================ -->
-  <section class="tool-card upload-card">
-    <div class="upload-box">
-      <input type="file" id="csvFile" accept=".csv" />
-      <p class="upload-hint">Choose CSV file</p>
-    </div>
-  </section>
+  <section class="tool-step">
+    <div class="tool-card upload-card">
+      <h2 class="step-title">1. Upload CSV</h2>
 
-  <!-- ===============================
-  STEP 2: FILE META
-  ================================ -->
-  <section class="tool-card meta-card">
-    <div class="meta-pills">
-      <span id="fileName" class="meta-pill">File —</span>
-      <span id="rowCount" class="meta-pill">Rows —</span>
-      <span id="columnCount" class="meta-pill">Columns —</span>
-    </div>
-  </section>
-
-  <!-- ===============================
-  STEP 3: KEYWORDS (SECONDARY)
-  ================================ -->
-  <section class="tool-card keywords-card">
-    <p class="keywords-info">
-      Keyword matches across <strong>Email · Company · Name</strong>
-    </p>
-
-    <div id="keywordList" class="keyword-list"></div>
-
-    <div class="keyword-add">
-      <input id="newKeyword" type="text" placeholder="Add keyword (e.g. remax)" />
-      <button id="addKeywordBtn" class="btn secondary">Add</button>
-    </div>
-  </section>
-
-  <!-- ===============================
-  STEP 4: ANALYZE
-  ================================ -->
-  <section class="tool-card analyze-card">
-    <button id="analyzeBtn" class="btn primary" disabled>
-      Analyze CSV
-    </button>
-
-    <div class="analyze-summary">
-      <span class="meta-pill"><strong id="agentCount">0</strong> Agents</span>
-      <span class="meta-pill"><strong id="possibleCount">0</strong> Possible</span>
-      <span class="meta-pill"><strong id="otherCount">0</strong> Others</span>
-    </div>
-  </section>
-
-  <!-- ===============================
-  STEP 5: RESULTS
-  ================================ -->
-  <section class="tool-card results-card" id="resultsPreview">
-
-    <h2 class="results-title">Results Preview</h2>
-
-    <div class="results-grid">
-
-      <!-- AGENTS -->
-      <div class="result-card">
-        <div class="result-header">
-          <h3>Real Estate Agents</h3>
-        </div>
-
-        <div class="table-wrap">
-          <table id="agentsPreviewTable" class="preview-table"></table>
-        </div>
-
-        <div class="result-actions">
-          <button id="downloadAgents" class="btn primary">
-            Download Agents CSV
-          </button>
-        </div>
+      <div class="upload-box">
+        <input type="file" id="csvFile" accept=".csv" />
+        <p class="upload-hint">Choose a CSV file from your computer</p>
       </div>
+    </div>
+  </section>
 
-      <!-- POSSIBLE -->
-      <div class="result-card">
-        <div class="result-header">
-          <h3>Possible Agents</h3>
-        </div>
+  <!-- ===============================
+  STEP 2 — FILE DETAILS
+  ================================ -->
+  <section class="tool-step">
+    <div class="tool-card meta-card">
+      <h2 class="step-title">2. File Overview</h2>
 
-        <div class="table-wrap">
-          <table id="possiblePreviewTable" class="preview-table"></table>
-        </div>
-
-        <div class="result-actions">
-          <button id="downloadPossible" class="btn secondary">
-            Download Possible CSV
-          </button>
-        </div>
+      <div class="meta-pills">
+        <span id="fileName" class="meta-pill">File —</span>
+        <span id="rowCount" class="meta-pill">Rows —</span>
+        <span id="columnCount" class="meta-pill">Columns —</span>
       </div>
+    </div>
+  </section>
 
-      <!-- OTHERS -->
-      <div class="result-card">
-        <div class="result-header">
-          <h3>Other Contacts</h3>
-        </div>
+  <!-- ===============================
+  STEP 3 — KEYWORDS (OPTIONAL)
+  ================================ -->
+  <section class="tool-step">
+    <div class="tool-card keywords-card">
+      <h2 class="step-title">3. Optional Keywords</h2>
 
-        <div class="table-wrap">
-          <table id="othersPreviewTable" class="preview-table"></table>
-        </div>
+      <p class="keywords-info">
+        Keywords are matched across <strong>Email, Company, and Name</strong>.
+        System keywords are applied automatically.
+      </p>
 
-        <div class="result-actions">
-          <button id="downloadOthers" class="btn secondary">
-            Download Others CSV
-          </button>
-        </div>
+      <!-- User-added keywords only -->
+      <div id="keywordList" class="keyword-list"></div>
+
+      <div class="keyword-add">
+        <input
+          id="newKeyword"
+          type="text"
+          placeholder="Add keyword (e.g. remax)"
+        />
+        <button id="addKeywordBtn" class="btn secondary">Add</button>
       </div>
+    </div>
+  </section>
 
+  <!-- ===============================
+  STEP 4 — ANALYZE
+  ================================ -->
+  <section class="tool-step">
+    <div class="tool-card analyze-card">
+      <h2 class="step-title">4. Analyze</h2>
+
+      <button id="analyzeBtn" class="btn primary" disabled>
+        Analyze CSV
+      </button>
+
+      <div class="analyze-summary">
+        <span class="meta-pill">
+          <strong id="agentCount">0</strong> Agents
+        </span>
+        <span class="meta-pill">
+          <strong id="possibleCount">0</strong> Possible
+        </span>
+        <span class="meta-pill">
+          <strong id="otherCount">0</strong> Others
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===============================
+  STEP 5 — RESULTS
+  ================================ -->
+  <section class="tool-step results-step" id="resultsPreview">
+
+    <div class="tool-card results-card">
+      <h2 class="results-title">Results Preview</h2>
+
+      <div class="results-grid">
+
+        <!-- AGENTS -->
+        <div class="result-card">
+          <div class="result-header">
+            <h3>Real Estate Agents</h3>
+          </div>
+
+          <div class="table-wrap">
+            <table id="agentsPreviewTable" class="preview-table"></table>
+          </div>
+
+          <div class="result-actions">
+            <button id="downloadAgents" class="btn primary">
+              Download Agents CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- POSSIBLE -->
+        <div class="result-card">
+          <div class="result-header">
+            <h3>Possible Agents</h3>
+          </div>
+
+          <div class="table-wrap">
+            <table id="possiblePreviewTable" class="preview-table"></table>
+          </div>
+
+          <div class="result-actions">
+            <button id="downloadPossible" class="btn secondary">
+              Download Possible CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- OTHERS -->
+        <div class="result-card">
+          <div class="result-header">
+            <h3>Other Contacts</h3>
+          </div>
+
+          <div class="table-wrap">
+            <table id="othersPreviewTable" class="preview-table"></table>
+          </div>
+
+          <div class="result-actions">
+            <button id="downloadOthers" class="btn secondary">
+              Download Others CSV
+            </button>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
