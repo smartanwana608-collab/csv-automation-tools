@@ -94,6 +94,7 @@ function downloadCSV(filename, headers, data) {
 /* ================= MAIN ================= */
 document.addEventListener("DOMContentLoaded", () => {
   const $ = id => document.getElementById(id);
+  const $$ = selector => document.querySelectorAll(selector);
 
   const fileInput = $("csvFile");
   const analyzeBtn = $("analyzeBtn");
@@ -102,9 +103,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const rowCountEl = $("rowCount");
   const columnCountEl = $("columnCount");
 
-  const agentCount = $("agentCount");
-  const possibleCount = $("possibleCount");
-  const otherCount = $("otherCount");
+  // 🔥 FIX: get ALL count elements
+  const agentCounts = $$("#agentCount");
+  const possibleCounts = $$("#possibleCount");
+  const otherCounts = $$("#otherCount");
 
   const agentsTable = $("agentsPreviewTable");
   const possibleTable = $("possiblePreviewTable");
@@ -120,7 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const cancel = $("disclaimerCancel");
 
   let pendingFile = null;
-
   analyzeBtn.disabled = true;
 
   fileInput.onchange = () => {
@@ -150,7 +151,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!parsed.length) return;
 
       const baseHeaders = parsed[0];
-
       const headers = [
         ...baseHeaders,
         "leadcleer_agent_status",
@@ -191,23 +191,17 @@ document.addEventListener("DOMContentLoaded", () => {
         let score = 0;
         const sources = [];
 
-        if (emailCols.some(i =>
-          keywords.some(k => normalize(r[i]).includes(k))
-        )) {
+        if (emailCols.some(i => keywords.some(k => normalize(r[i]).includes(k)))) {
           score += 2;
           sources.push("Email");
         }
 
-        if (companyCols.some(i =>
-          keywords.some(k => normalize(r[i]).includes(k))
-        )) {
+        if (companyCols.some(i => keywords.some(k => normalize(r[i]).includes(k)))) {
           score += 2;
           sources.push("Company");
         }
 
-        if (nameCols.some(i =>
-          keywords.some(k => normalize(r[i]).includes(k))
-        )) {
+        if (nameCols.some(i => keywords.some(k => normalize(r[i]).includes(k)))) {
           score += 1;
           sources.push("Name");
         }
@@ -235,10 +229,10 @@ document.addEventListener("DOMContentLoaded", () => {
         else others.push(fullRow);
       });
 
-      /* ===== COUNTS ===== */
-      agentCount.textContent = agents.length;
-      possibleCount.textContent = possible.length;
-      otherCount.textContent = others.length;
+      /* ===== COUNTS (FIXED) ===== */
+      agentCounts.forEach(el => el.textContent = agents.length);
+      possibleCounts.forEach(el => el.textContent = possible.length);
+      otherCounts.forEach(el => el.textContent = others.length);
 
       /* ===== PREVIEWS ===== */
       renderPreview(agentsTable, headers, agents);
