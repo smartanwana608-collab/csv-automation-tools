@@ -247,3 +247,19 @@ Affects ONLY filter-real-estate.html
     padding: 28px;
   }
 }
+/* ================= HARD OVERRIDES ================= */
+
+/* Kill global section padding from main.css */
+.filter-agents-page section {
+  padding: 0 !important;
+}
+
+/* Hide results until JS populates */
+.filter-agents-page #resultsPreview {
+  display: none;
+}
+
+/* Show results once analysis runs */
+.filter-agents-page #resultsPreview.show {
+  display: block;
+}
