@@ -2,56 +2,161 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Prompt Tool | Leadcleer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prompt-Based CSV Tool</title>
 
-  <link rel="stylesheet" href="/assets/css/main.css" />
+  <!-- Global CSS ONLY -->
+  <link rel="stylesheet" href="../assets/css/main.css" />
 </head>
 
 <body>
 
-<header class="tool-header">
-  <a href="/index.html" class="back-home">← Home</a>
-  <h1>Prompt-Based CSV Tool</h1>
-  <p>Describe what you want to do with your CSV file.</p>
+<!-- ===============================
+NAV
+================================ -->
+<header class="nav">
+  <div class="nav-container">
+    <div class="logo">Leadcleer</div>
+    <nav class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="../features.html" class="active">Features</a>
+      <a href="../pricing.html">Pricing</a>
+      <a href="../how-it-works.html">How It Works</a>
+      <a href="../contact.html">Contact</a>
+    </nav>
+  </div>
 </header>
 
+<!-- ===============================
+MAIN CONTAINER
+================================ -->
 <main class="tool-container">
 
-  <div class="card">
-    <h2>What do you want to do?</h2>
+  <!-- ===============================
+  HEADER
+  ================================ -->
+  <header class="tool-header">
+    <h1>Prompt Tool</h1>
+    <p class="tool-subtitle">
+      Type what you want to do with your CSV.
+      We’ll match it to the closest available action.
+    </p>
+  </header>
+
+  <!-- ===============================
+  PROMPT INPUT
+  ================================ -->
+  <section class="tool-card">
+    <h2 class="step-title">What do you want to do?</h2>
+
     <textarea
-      id="promptInput"
-      rows="4"
-      placeholder="Example: filter real estate agents"
-      style="width:100%; padding:14px;"
+      id="userPrompt"
+      placeholder="Example: remove duplicate emails"
+      rows="3"
     ></textarea>
-  </div>
 
-  <div class="card">
-    <h2>Upload CSV</h2>
-    <input type="file" id="csvFile" accept=".csv" />
-  </div>
+    <button id="runPromptBtn" class="btn primary">
+      Run Action
+    </button>
+  </section>
 
-  <div class="card">
-    <button id="runBtn" disabled>Run Prompt</button>
-    <div id="statusBox" style="display:none;">
-      <strong>Status:</strong> <span id="statusText"></span>
+  <!-- ===============================
+  AVAILABLE ACTIONS (VISIBLE)
+  ================================ -->
+  <section class="tool-card">
+    <h2 class="step-title">Available Actions</h2>
+
+    <p class="keywords-info">
+      Copy and use one of these actions in your prompt.
+    </p>
+
+    <ul id="availableActions" class="action-list">
+      <li>remove duplicates</li>
+      <li>remove missing emails</li>
+      <li>split by column</li>
+      <li>create column</li>
+      <li>extract house numbers</li>
+      <li>fix addresses</li>
+      <li>filter real estate agents</li>
+    </ul>
+  </section>
+
+  <!-- ===============================
+  SYSTEM RESPONSE
+  ================================ -->
+  <section class="tool-card" id="systemResponse">
+    <h2 class="step-title">System Response</h2>
+    <div id="responseText" class="response-box">
+      Waiting for your prompt…
     </div>
-  </div>
+  </section>
 
-  <div class="card" id="resultCard" style="display:none;">
-    <h2>Results</h2>
-    <pre id="resultSummary"></pre>
-  </div>
+  <!-- ===============================
+  PREVIEW
+  ================================ -->
+  <section class="tool-card" id="previewSection">
+    <h2 class="step-title">Preview</h2>
+
+    <div class="table-wrap">
+      <table id="previewTable" class="preview-table"></table>
+    </div>
+  </section>
+
+  <!-- ===============================
+  DOWNLOAD ACTIONS
+  ================================ -->
+  <section class="tool-card" id="downloadSection">
+    <h2 class="step-title">Download</h2>
+
+    <div class="download-actions">
+      <button id="downloadPrimary" class="btn primary">
+        Download Result
+      </button>
+    </div>
+  </section>
 
 </main>
 
-<!-- LOAD ACTIONS FIRST -->
-<script src="/actions/filter-real-estate.js"></script>
+<!-- ===============================
+FOOTER (GLOBAL)
+================================ -->
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <span class="logo-dot"></span>
+        <span class="logo-text">Leadcleer</span>
+      </div>
+      <p class="footer-tagline">
+        Turn messy CSVs into clean, usable leads — fast.
+      </p>
+    </div>
 
-<!-- LOAD ENGINE LAST -->
-<script src="/assets/js/prompt-engine.js"></script>
+    <div class="footer-links">
+      <div class="footer-column">
+        <strong>Product</strong>
+        <a href="../features.html">Features</a>
+        <a href="../pricing.html">Pricing</a>
+        <a href="../how-it-works.html">How It Works</a>
+      </div>
+
+      <div class="footer-column">
+        <strong>Legal</strong>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms & Conditions</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    © 2026 Leadcleer. All rights reserved.
+  </div>
+</footer>
+
+<!-- ===============================
+SCRIPT
+================================ -->
+<script src="../assets/js/prompt-engine.js"></script>
 
 </body>
 </html>
