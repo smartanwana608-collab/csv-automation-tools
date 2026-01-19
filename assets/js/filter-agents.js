@@ -1,57 +1,48 @@
-/***************************************************
- * Leadcleer – Filter Real Estate Agents (v2)
- * Multi-signal detection with audit transparency
- ***************************************************/
-
 const STORAGE_KEY = "csv_agent_keywords";
 
-/* ================= DEFAULT KEYWORDS ================= */
 let keywords = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
-  "remax","sutton","rlp","c21","century",
-  "realty","real","exp","kw","coldwell",
-  "broker","brokerage","agent","homes","home"
+  "remax","sutton","rlp","c21","century","real","realty","exp",
+  "kw","coldwell","broker","brokerage","agent","home","homes"
 ];
 
 function saveKeywords() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(keywords));
 }
 
-/* ================= PREVIEW TABLE ================= */
+function normalize(v) {
+  return (v || "").toString().toLowerCase();
+}
+
 function renderPreview(tableEl, headers, rows, limit = 10) {
   tableEl.innerHTML = "";
-
   if (!rows.length) {
     tableEl.innerHTML = "<tr><td>No data</td></tr>";
     return;
   }
 
   const thead = document.createElement("thead");
-  const headRow = document.createElement("tr");
-
+  const tr = document.createElement("tr");
   headers.forEach(h => {
     const th = document.createElement("th");
     th.textContent = h;
-    headRow.appendChild(th);
+    tr.appendChild(th);
   });
-
-  thead.appendChild(headRow);
+  thead.appendChild(tr);
   tableEl.appendChild(thead);
 
   const tbody = document.createElement("tbody");
   rows.slice(0, limit).forEach(row => {
-    const tr = document.createElement("tr");
+    const r = document.createElement("tr");
     row.forEach(cell => {
       const td = document.createElement("td");
-      td.textContent = cell ?? "";
-      tr.appendChild(td);
+      td.textContent = cell;
+      r.appendChild(td);
     });
-    tbody.appendChild(tr);
+    tbody.appendChild(r);
   });
-
   tableEl.appendChild(tbody);
 }
 
-/* ================= MAIN ================= */
 document.addEventListener("DOMContentLoaded", () => {
   const fileInput = document.getElementById("csvFile");
   const analyzeBtn = document.getElementById("analyzeBtn");
@@ -61,24 +52,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const columnCountEl = document.getElementById("columnCount");
 
   const agentCountEl = document.getElementById("agentCount");
+  const possibleCountEl = document.getElementById("possibleCount");
   const otherCountEl = document.getElementById("otherCount");
 
   const agentsPreview = document.getElementById("agentsPreview");
+  const possiblePreview = document.getElementById("possiblePreview");
   const othersPreview = document.getElementById("othersPreview");
 
   const downloadAgents = document.getElementById("downloadAgents");
+  const downloadPossible = document.getElementById("downloadPossible");
   const downloadOthers = document.getElementById("downloadOthers");
 
   const keywordList = document.getElementById("keywordList");
   const newKeyword = document.getElementById("newKeyword");
   const addKeywordBtn = document.getElementById("addKeywordBtn");
 
-  let headers = [];
-  let rows = [];
-  let agents = [];
-  let others = [];
+  let headers = [], rows = [];
+  let agents = [], possible = [], others = [];
 
-  /* ================= KEYWORD UI ================= */
   function renderKeywords() {
     keywordList.innerHTML = "";
     keywords.forEach((k, i) => {
@@ -108,7 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderKeywords();
 
-  /* ================= FILE LOAD ================= */
   fileInput.onchange = () => {
     const file = fileInput.files[0];
     if (!file) return;
@@ -117,119 +107,116 @@ document.addEventListener("DOMContentLoaded", () => {
     analyzeBtn.classList.add("enabled");
   };
 
-  /* ================= ANALYSIS ================= */
   analyzeBtn.onclick = () => {
     const reader = new FileReader();
-
     reader.onload = e => {
-      const parsed = e.target.result
-        .trim()
-        .split("\n")
-        .map(r => r.split(","));
-
+      const parsed = e.target.result.trim().split("\n").map(r => r.split(","));
       headers = parsed[0];
       rows = parsed.slice(1);
 
       rowCountEl.textContent = "Total rows: " + rows.length;
       columnCountEl.textContent = "Detected columns: " + headers.length;
 
-      /* ---- COLUMN DETECTION ---- */
       const emailCols = headers
-        .map((h,i)=> h.toLowerCase().includes("email") ? i : null)
-        .filter(i=>i!==null);
-
-      const companyCols = headers
-        .map((h,i)=> ["company","brokerage","office","organization"]
-          .some(k=>h.toLowerCase().includes(k)) ? i : null)
-        .filter(i=>i!==null);
+        .map((h, i) => normalize(h).includes("email") ? i : null)
+        .filter(i => i !== null);
 
       const nameCols = headers
-        .map((h,i)=> ["name","first","last"]
-          .some(k=>h.toLowerCase().includes(k)) ? i : null)
-        .filter(i=>i!==null);
+        .map((h, i) =>
+          ["name","first","last"].some(k => normalize(h).includes(k)) ? i : null
+        )
+        .filter(i => i !== null);
 
-      agents = [];
-      others = [];
+      const companyCols = headers
+        .map((h, i) =>
+          ["company","office","brokerage","organization"].some(k => normalize(h).includes(k)) ? i : null
+        )
+        .filter(i => i !== null);
 
-      const enhancedHeaders = [
+      const extendedHeaders = [
         ...headers,
         "leadcleer_agent_status",
-        "leadcleer_detection_source"
+        "leadcleer_detection_sources",
+        "leadcleer_confidence"
       ];
 
+      agents = [];
+      possible = [];
+      others = [];
+
       rows.forEach(r => {
-        let signals = {
-          email: false,
-          company: false,
-          name: false
-        };
+        let score = 0;
+        let sources = [];
 
-        /* ---- EMAIL SIGNAL (STRONG) ---- */
-        signals.email = emailCols.some(i =>
-          r[i] && keywords.some(k => r[i].toLowerCase().includes(k))
-        );
+        if (emailCols.some(i => keywords.some(k => normalize(r[i]).includes(k)))) {
+          score += 2;
+          sources.push("Email");
+        }
 
-        /* ---- COMPANY SIGNAL (VERY STRONG) ---- */
-        signals.company = companyCols.some(i =>
-          r[i] && keywords.some(k => r[i].toLowerCase().includes(k))
-        );
+        if (companyCols.some(i => keywords.some(k => normalize(r[i]).includes(k)))) {
+          score += 2;
+          sources.push("Company");
+        }
 
-        /* ---- NAME SIGNAL (WEAK / CONTROLLED) ---- */
-        signals.name = nameCols.some(i =>
-          r[i] &&
-          keywords.some(k => r[i].toLowerCase().includes(k)) &&
-          r[i].length > k.length + 3
-        );
+        if (nameCols.some(i => keywords.some(k => normalize(r[i]).includes(k)))) {
+          score += 1;
+          sources.push("Name");
+        }
 
-        const signalCount = Object.values(signals).filter(Boolean).length;
+        let status = "Other";
+        let confidence = "Low";
 
-        let status = "Not Agent";
-        let source = "None";
-
-        if (signalCount >= 2) {
+        if (score >= 3) {
           status = "Agent";
-          source = Object.keys(signals).filter(s => signals[s]).join(", ");
-        } else if (signalCount === 1) {
+          confidence = "High";
+        } else if (score === 2) {
           status = "Possible Agent";
-          source = Object.keys(signals).find(s => signals[s]);
+          confidence = "Medium";
         }
 
-        const enhancedRow = [...r, status, source];
+        const newRow = [
+          ...r,
+          status,
+          sources.join(" + ") || "None",
+          confidence
+        ];
 
-        if (status === "Agent") {
-          agents.push(enhancedRow);
-        } else {
-          others.push(enhancedRow);
-        }
+        if (status === "Agent") agents.push(newRow);
+        else if (status === "Possible Agent") possible.push(newRow);
+        else others.push(newRow);
       });
 
-      headers = enhancedHeaders;
-
       agentCountEl.textContent = agents.length;
+      possibleCountEl.textContent = possible.length;
       otherCountEl.textContent = others.length;
 
-      renderPreview(agentsPreview, headers, agents);
-      renderPreview(othersPreview, headers, others);
+      renderPreview(agentsPreview, extendedHeaders, agents);
+      renderPreview(possiblePreview, extendedHeaders, possible);
+      renderPreview(othersPreview, extendedHeaders, others);
 
       downloadAgents.classList.add("enabled");
+      downloadPossible.classList.add("enabled");
       downloadOthers.classList.add("enabled");
+
+      headers = extendedHeaders;
     };
 
     reader.readAsText(fileInput.files[0]);
   };
 
-  /* ================= DOWNLOAD ================= */
   function downloadCSV(name, data) {
     const csv = [headers, ...data].map(r => r.join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
+    a.href = URL.createObjectURL(new Blob([csv]));
     a.download = name;
     a.click();
   }
 
   downloadAgents.onclick = () =>
-    agents.length && downloadCSV("real_estate_agents.csv", agents);
+    agents.length && downloadCSV("agents_high_confidence.csv", agents);
+
+  downloadPossible.onclick = () =>
+    possible.length && downloadCSV("agents_possible_review.csv", possible);
 
   downloadOthers.onclick = () =>
     others.length && downloadCSV("other_contacts.csv", others);
