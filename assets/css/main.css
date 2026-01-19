@@ -538,3 +538,35 @@ th {
   border-radius: 12px;
   min-width: 220px;
 }
+/* ================= FILTER REAL ESTATE – MOBILE MENU FIX ================= */
+.filter-agents-page .menu-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .filter-agents-page .menu-toggle {
+    display: block;
+  }
+
+  .filter-agents-page .nav-links {
+    display: none;
+    position: absolute;
+    top: 72px;
+    left: 0;
+    right: 0;
+    background: var(--bg);
+    flex-direction: column;
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    z-index: 999;
+  }
+
+  .filter-agents-page .nav-links.open {
+    display: flex;
+  }
+
+  .filter-agents-page .nav-links a {
+    margin: 12px 0;
+    font-size: 1rem;
+  }
+}
