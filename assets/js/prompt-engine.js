@@ -1,67 +1,146 @@
-/* =====================================================
-PROMPT ENGINE
-Free-text → Action Resolver → Executor
-===================================================== */
+// js/prompt-engine.js
 
-import { filterRealEstateAgents } from "../actions/filter-real-estate.js";
+import { filterRealEstate } from "../actions/filter-real-estate.js";
 
-/* ================= REGISTERED ACTIONS ================= */
+let parsedRows = [];
+
 const ACTIONS = [
   {
-    key: "filter-real-estate",
-    name: "Filter Real Estate Agents",
-    triggers: [
+    name: "filter real estate",
+    handler: filterRealEstate,
+    aliases: [
+      "filter real estate",
       "real estate",
-      "real estate agent",
-      "broker",
-      "brokerage",
-      "agent"
-    ],
-    handler: filterRealEstateAgents
+      "realty",
+      "agents",
+      "brokerage"
+    ]
   }
 ];
 
-/* ================= HELPERS ================= */
-const normalize = text =>
-  (text || "")
-    .toString()
-    .toLowerCase()
-    .replace(/[^\w\s]/g, "")
-    .trim();
+function normalize(text) {
+  return text.toLowerCase().trim();
+}
 
-/* ================= CORE ENGINE ================= */
-export function runPrompt({
-  prompt,
-  headers,
-  rows
-}) {
-  const cleanPrompt = normalize(prompt);
+function matchAction(prompt) {
+  const input = normalize(prompt);
 
-  /* 1️⃣ Detect matching action */
-  const matchedAction = ACTIONS.find(action =>
-    action.triggers.some(t => cleanPrompt.includes(t))
-  );
-
-  /* 2️⃣ Graceful fallback (Option 1) */
-  if (!matchedAction) {
-    return {
-      success: false,
-      message: `We don’t have an action for "${prompt}" yet.`,
-      suggestions: ACTIONS.map(a => a.name)
-    };
+  for (const action of ACTIONS) {
+    if (
+      action.aliases.some(alias => input.includes(alias))
+    ) {
+      return action;
+    }
   }
 
-  /* 3️⃣ Execute action */
-  const result = matchedAction.handler(headers, rows);
-
-  return {
-    success: true,
-    action: matchedAction.name,
-    result
-  };
+  return null;
 }
 
-/* ================= AVAILABLE ACTIONS (UI USE) ================= */
-export function getAvailableActions() {
-  return ACTIONS.map(a => a.name);
+function renderResults(result) {
+  const container = document.getElementById("promptResults");
+  container.innerHTML = "";
+
+  const section = document.createElement("div");
+  section.className = "tool-card";
+
+  section.innerHTML = `
+    <h2>${result.title}</h2>
+    <p>${result.summary}</p>
+
+    <h3>Real Estate Agents</h3>
+    ${renderTable(result.preview.agents)}
+
+    <h3>Possible Agents</h3>
+    ${renderTable(result.preview.possibleAgents)}
+
+    <h3>Other Contacts</h3>
+    ${renderTable(result.preview.others)}
+
+    <div class="download-actions">
+      <button class="btn primary" onclick="downloadCSV('agents')">Download Agents CSV</button>
+      <button class="btn secondary" onclick="downloadCSV('possibleAgents')">Download Possible CSV</button>
+      <button class="btn secondary" onclick="downloadCSV('others')">Download Others CSV</button>
+    </div>
+  `;
+
+  container.appendChild(section);
+
+  window.__DOWNLOAD_DATA__ = result.downloads;
 }
+
+function renderTable(rows) {
+  if (!rows.length) return "<p>No rows</p>";
+
+  const headers = Object.keys(rows[0]);
+
+  return `
+    <div class="table-wrap">
+      <table class="preview-table">
+        <thead>
+          <tr>
+            ${headers.map(h => `<th>${h}</th>`).join("")}
+          </tr>
+        </thead>
+        <tbody>
+          ${rows
+            .map(
+              row =>
+                `<tr>${headers
+                  .map(h => `<td>${row[h] ?? ""}</td>`)
+                  .join("")}</tr>`
+            )
+            .join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+window.downloadCSV = function (type) {
+  const rows = window.__DOWNLOAD_DATA__[type];
+  if (!rows || !rows.length) return;
+
+  const headers = Object.keys(rows[0]);
+  const csv = [
+    headers.join(","),
+    ...rows.map(r => headers.map(h => `"${r[h] ?? ""}"`).join(","))
+  ].join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${type}.csv`;
+  a.click();
+
+  URL.revokeObjectURL(url);
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  const runBtn = document.getElementById("runPromptBtn");
+  const promptInput = document.getElementById("promptInput");
+
+  runBtn.addEventListener("click", () => {
+    const action = matchAction(promptInput.value);
+
+    if (!action) {
+      document.getElementById("promptResults").innerHTML = `
+        <div class="tool-card">
+          <p>
+            We don’t have an action for that yet.<br />
+            Try one of the available actions below.
+          </p>
+        </div>
+      `;
+      return;
+    }
+
+    const result = action.handler(parsedRows);
+    renderResults(result);
+  });
+
+  document.addEventListener("csvParsed", e => {
+    parsedRows = e.detail.rows;
+  });
+});
