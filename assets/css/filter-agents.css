@@ -1,156 +1,185 @@
-/* =====================================================
-FILTER AGENTS PAGE — ISOLATED & FINAL
-Does NOT affect other pages
-===================================================== */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Filter Real Estate Agents | Leadcleer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-.filter-agents-page .tool-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 60px 24px 120px;
-}
+  <!-- Global CSS -->
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <!-- Tool-specific CSS -->
+  <link rel="stylesheet" href="../assets/css/filter-agents.css" />
+</head>
 
-/* ---------------- HEADER ---------------- */
-.filter-agents-page .tool-header {
-  text-align: center;
-  margin-bottom: 48px;
-}
+<body class="filter-agents-page">
 
-.filter-agents-page .tool-header h1 {
-  font-size: 2.4rem;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
+<!-- ===============================
+TOP NAV
+================================ -->
+<header class="nav">
+  <div class="nav-container">
+    <div class="logo">Leadcleer</div>
+    <nav class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="../features.html" class="active">Features</a>
+      <a href="../pricing.html">Pricing</a>
+      <a href="../how-it-works.html">How It Works</a>
+      <a href="../contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
 
-.filter-agents-page .tool-subtitle {
-  color: var(--muted);
-  font-size: 1rem;
-}
+<!-- ===============================
+FILTER TOOL
+================================ -->
+<main class="tool-container">
 
-/* ---------------- TOOL CARDS ---------------- */
-.filter-agents-page .tool-card {
-  background: #0c1022;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 28px;
-  margin-bottom: 28px;
-}
+  <!-- ===== HEADER ===== -->
+  <header class="tool-header">
+    <h1>Filter Real Estate Agents</h1>
+    <p class="tool-subtitle">
+      Upload a CSV and intelligently classify contacts using confidence-based detection.
+    </p>
+  </header>
 
-/* ---------------- UPLOAD ---------------- */
-.filter-agents-page .upload-card {
-  display: flex;
-  justify-content: center;
-}
+  <!-- ===============================
+  STEP 1: UPLOAD
+  ================================ -->
+  <section class="tool-card upload-card">
+    <div class="upload-box">
+      <input type="file" id="csvFile" accept=".csv" />
+      <p class="upload-hint">Choose CSV file</p>
+    </div>
+  </section>
 
-.filter-agents-page .upload-box {
-  width: 100%;
-  max-width: 520px;
-  text-align: center;
-  border: 1px dashed var(--border);
-  border-radius: 16px;
-  padding: 36px;
-  background: #0b0f22;
-}
+  <!-- ===============================
+  STEP 2: FILE META
+  ================================ -->
+  <section class="tool-card meta-card">
+    <div class="meta-pills">
+      <span id="fileName" class="meta-pill">File —</span>
+      <span id="rowCount" class="meta-pill">Rows —</span>
+      <span id="columnCount" class="meta-pill">Columns —</span>
+    </div>
+  </section>
 
-.filter-agents-page .upload-hint {
-  color: var(--muted);
-  font-size: 0.9rem;
-}
+  <!-- ===============================
+  STEP 3: KEYWORDS (SECONDARY)
+  ================================ -->
+  <section class="tool-card keywords-card">
+    <p class="keywords-info">
+      Keyword matches across <strong>Email · Company · Name</strong>
+    </p>
 
-/* ---------------- META PILLS ---------------- */
-.filter-agents-page .meta-card {
-  display: flex;
-  justify-content: center;
-}
+    <div id="keywordList" class="keyword-list"></div>
 
-.filter-agents-page .meta-pills {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
+    <div class="keyword-add">
+      <input id="newKeyword" type="text" placeholder="Add keyword (e.g. remax)" />
+      <button id="addKeywordBtn" class="btn secondary">Add</button>
+    </div>
+  </section>
 
-.filter-agents-page .meta-pill {
-  background: #ffffff;
-  color: #0b0d12;
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
+  <!-- ===============================
+  STEP 4: ANALYZE
+  ================================ -->
+  <section class="tool-card analyze-card">
+    <button id="analyzeBtn" class="btn primary" disabled>
+      Analyze CSV
+    </button>
 
-/* ---------------- KEYWORDS ---------------- */
-.filter-agents-page .keywords-card {
-  text-align: center;
-}
+    <div class="analyze-summary">
+      <span class="meta-pill"><strong id="agentCount">0</strong> Agents</span>
+      <span class="meta-pill"><strong id="possibleCount">0</strong> Possible</span>
+      <span class="meta-pill"><strong id="otherCount">0</strong> Others</span>
+    </div>
+  </section>
 
-.filter-agents-page .keyword-list {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
-}
+  <!-- ===============================
+  STEP 5: RESULTS
+  ================================ -->
+  <section class="tool-card results-card results-step" id="resultsPreview">
 
-.filter-agents-page .keyword-chip {
-  background: rgba(255,255,255,0.12);
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 0.85rem;
-}
+    <h2 class="results-title">Results Preview</h2>
 
-/* ---------------- ANALYZE ---------------- */
-.filter-agents-page .analyze-card {
-  text-align: center;
-}
+    <div class="results-grid">
 
-.filter-agents-page .analyze-summary {
-  margin-top: 18px;
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
+      <!-- AGENTS -->
+      <div class="result-card">
+        <div class="result-header">
+          <h3>Real Estate Agents</h3>
+        </div>
 
-/* ---------------- RESULTS ---------------- */
-.filter-agents-page .results-title {
-  text-align: center;
-  margin-bottom: 28px;
-}
+        <div class="table-wrap">
+          <table id="agentsPreviewTable" class="preview-table"></table>
+        </div>
 
-.filter-agents-page .results-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 36px;
-}
+        <div class="result-actions">
+          <button id="downloadAgents" class="btn primary">
+            Download Agents CSV
+          </button>
+        </div>
+      </div>
 
-/* ---------------- TABLE (PROTOTYPE STYLE) ---------------- */
-.filter-agents-page .table-wrap {
-  max-height: 300px;
-  overflow-x: auto;
-  overflow-y: auto;
-  background: #0b0f22;
-  border-radius: 12px;
-}
+      <!-- POSSIBLE -->
+      <div class="result-card">
+        <div class="result-header">
+          <h3>Possible Agents</h3>
+        </div>
 
-.filter-agents-page .preview-table {
-  width: max-content;
-  min-width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
+        <div class="table-wrap">
+          <table id="possiblePreviewTable" class="preview-table"></table>
+        </div>
 
-.filter-agents-page .preview-table th {
-  position: sticky;
-  top: 0;
-  background: #0c1022;
-  padding: 10px;
-  text-align: left;
-  color: var(--muted);
-  border-bottom: 1px solid var(--border);
-}
+        <div class="result-actions">
+          <button id="downloadPossible" class="btn secondary">
+            Download Possible CSV
+          </button>
+        </div>
+      </div>
 
-.filter-agents-page .preview-table td {
-  padding: 10px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  white-space: nowrap;
-}
+      <!-- OTHERS -->
+      <div class="result-card">
+        <div class="result-header">
+          <h3>Other Contacts</h3>
+        </div>
+
+        <div class="table-wrap">
+          <table id="othersPreviewTable" class="preview-table"></table>
+        </div>
+
+        <div class="result-actions">
+          <button id="downloadOthers" class="btn secondary">
+            Download Others CSV
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ===============================
+DISCLAIMER MODAL
+================================ -->
+<div id="disclaimerModal" class="disclaimer-modal">
+  <div class="disclaimer-box">
+    <h3>Privacy Notice</h3>
+    <p>
+      Your CSV is processed locally in your browser.
+      No data is uploaded or stored on our servers.
+    </p>
+    <div class="disclaimer-actions">
+      <button id="disclaimerCancel" class="btn secondary">Cancel</button>
+      <button id="disclaimerAccept" class="btn primary">I Understand</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===============================
+SCRIPT
+================================ -->
+<script src="../assets/js/filter-agents.js"></script>
+
+</body>
+</html>
