@@ -1,41 +1,62 @@
 /* =====================================================
-ACTION: FILTER REAL ESTATE AGENTS
-Used by prompt-engine.js
+FILTER REAL ESTATE ACTION — FINAL
 ===================================================== */
 
-/* ================= KEYWORDS ================= */
-/* Based on Peter’s feedback */
+/*
+  Classification rules (Peter-approved):
+
+  STRONG MATCH → Real Estate Agent
+  - Brokerage keywords in email domain OR company
+  - Multiple keyword hits across fields
+
+  WEAK MATCH → Possible Agent
+  - One keyword hit
+  - Job-related words (agent, broker, realtor)
+
+  ELSE → Other Contact
+*/
+
 const BROKERAGE_KEYWORDS = [
   "remax",
   "sutton",
   "rlp",
+  "royal lepage",
   "c21",
   "century",
-  "real",
-  "realty",
   "exp",
-  "broker",
+  "kw",
+  "keller",
+  "coldwell",
+  "realty",
   "brokerage",
-  "agent",
-  "home",
   "homes"
 ];
 
-/* ================= HELPERS ================= */
-const normalize = v =>
-  (v || "")
-    .toString()
-    .toLowerCase()
-    .replace(/[^\w\s]/g, "")
-    .trim();
+const ROLE_KEYWORDS = [
+  "agent",
+  "broker",
+  "realtor"
+];
 
-/* ================= CORE LOGIC ================= */
-export function filterRealEstateAgents(headers, rows) {
-  const agentRows = [];
-  const possibleRows = [];
-  const otherRows = [];
+function normalize(value = "") {
+  return value.toString().toLowerCase();
+}
 
-  /* Identify key columns */
+function countMatches(text, keywords) {
+  let count = 0;
+  keywords.forEach(k => {
+    if (text.includes(k)) count++;
+  });
+  return count;
+}
+
+export default function filterRealEstate({ headers, rows }) {
+  const results = {
+    agents: [],
+    possible: [],
+    others: []
+  };
+
   const emailIndex = headers.findIndex(h =>
     normalize(h).includes("email")
   );
@@ -45,46 +66,39 @@ export function filterRealEstateAgents(headers, rows) {
   );
 
   const companyIndex = headers.findIndex(h =>
-    normalize(h).includes("company") ||
-    normalize(h).includes("broker") ||
-    normalize(h).includes("office")
+    normalize(h).includes("company")
   );
 
   rows.forEach(row => {
-    let score = 0;
+    const email = normalize(row[emailIndex] || "");
+    const name = normalize(row[nameIndex] || "");
+    const company = normalize(row[companyIndex] || "");
 
-    const email = normalize(row[emailIndex]);
-    const name = normalize(row[nameIndex]);
-    const company = normalize(row[companyIndex]);
+    const combined = `${email} ${name} ${company}`;
 
-    /* Email scan */
-    BROKERAGE_KEYWORDS.forEach(k => {
-      if (email.includes(k)) score += 2;
-    });
+    const brokerageHits =
+      countMatches(combined, BROKERAGE_KEYWORDS);
 
-    /* Company scan */
-    BROKERAGE_KEYWORDS.forEach(k => {
-      if (company.includes(k)) score += 2;
-    });
+    const roleHits =
+      countMatches(combined, ROLE_KEYWORDS);
 
-    /* Name scan (lighter weight) */
-    BROKERAGE_KEYWORDS.forEach(k => {
-      if (name.includes(k)) score += 1;
-    });
+    let classification = "Other Contact";
 
-    /* Classification */
-    if (score >= 4) {
-      agentRows.push(row);
-    } else if (score >= 2) {
-      possibleRows.push(row);
-    } else {
-      otherRows.push(row);
+    if (brokerageHits >= 2 || (brokerageHits >= 1 && roleHits >= 1)) {
+      classification = "Real Estate Agent";
+      results.agents.push([...row, classification]);
+    }
+    else if (brokerageHits === 1 || roleHits === 1) {
+      classification = "Possible Agent";
+      results.possible.push([...row, classification]);
+    }
+    else {
+      results.others.push([...row, classification]);
     }
   });
 
   return {
-    agents: agentRows,
-    possible: possibleRows,
-    others: otherRows
+    headers: [...headers, "leadcleer_classification"],
+    results
   };
 }
