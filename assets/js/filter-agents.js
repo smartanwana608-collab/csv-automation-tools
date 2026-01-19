@@ -1,9 +1,9 @@
 const STORAGE_KEY = "csv_agent_keywords";
 
-/* ================= KEYWORDS ================= */
+/* ================= DEFAULT KEYWORDS ================= */
 let keywords = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
-  "remax","sutton","rlp","c21","century","real","realty","exp",
-  "kw","coldwell","broker","brokerage","agent","home","homes"
+  "remax","sutton","rlp","c21","century","real","realty",
+  "exp","kw","coldwell","broker","brokerage","agent","homes"
 ];
 
 const saveKeywords = () =>
@@ -20,26 +20,23 @@ function parseCSV(text) {
     const c = text[i], n = text[i + 1];
 
     if (c === '"' && inQuotes && n === '"') {
-      val += '"';
-      i++;
+      val += '"'; i++;
     } else if (c === '"') {
       inQuotes = !inQuotes;
     } else if (c === "," && !inQuotes) {
-      row.push(val);
-      val = "";
+      row.push(val); val = "";
     } else if ((c === "\n" || c === "\r") && !inQuotes) {
-      if (val || row.length) {
+      if (row.length || val) {
         row.push(val);
         rows.push(row);
-        row = [];
-        val = "";
+        row = []; val = "";
       }
     } else {
       val += c;
     }
   }
 
-  if (val || row.length) {
+  if (row.length || val) {
     row.push(val);
     rows.push(row);
   }
@@ -47,43 +44,47 @@ function parseCSV(text) {
   return rows;
 }
 
-/* ================= PREVIEW TABLE ================= */
+/* ================= UI HELPERS ================= */
+function renderKeywords(container) {
+  container.innerHTML = "";
+  keywords.forEach((k, i) => {
+    const chip = document.createElement("span");
+    chip.className = "keyword-chip";
+    chip.innerHTML = `${k} ✕`;
+    chip.onclick = () => {
+      keywords.splice(i, 1);
+      saveKeywords();
+      renderKeywords(container);
+    };
+    container.appendChild(chip);
+  });
+}
+
 function renderPreview(table, headers, rows) {
   table.innerHTML = "";
-  if (!rows.length) return;
-
-  const visibleCols = headers
-    .map((h, i) => ({
-      name: h,
-      i,
-      show: ["email", "first", "last", "leadcleer"].some(k =>
-        h.toLowerCase().includes(k)
-      )
-    }))
-    .filter(c => c.show);
+  if (!rows.length) {
+    table.innerHTML = "<tbody><tr><td>No records to preview</td></tr></tbody>";
+    return;
+  }
 
   table.innerHTML = `
     <thead>
-      <tr>${visibleCols.map(c => `<th>${c.name}</th>`).join("")}</tr>
+      <tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>
     </thead>
     <tbody>
-      ${rows.slice(0, 10).map(r =>
-        `<tr>${visibleCols.map(c =>
-          `<td>${r[c.i] || ""}</td>`
-        ).join("")}</tr>`
+      ${rows.slice(0,5).map(r =>
+        `<tr>${r.map(v => `<td>${v || ""}</td>`).join("")}</tr>`
       ).join("")}
     </tbody>
   `;
 }
 
-/* ================= CSV DOWNLOAD ================= */
-function downloadCSV(filename, headers, data) {
-  const escape = v =>
-    `"${(v ?? "").toString().replace(/"/g, '""')}"`;
-
+/* ================= DOWNLOAD ================= */
+function downloadCSV(filename, headers, rows) {
+  const escape = v => `"${(v ?? "").toString().replace(/"/g, '""')}"`;
   const csv = [
     headers.map(escape).join(","),
-    ...data.map(r => r.map(escape).join(","))
+    ...rows.map(r => r.map(escape).join(","))
   ].join("\n");
 
   const blob = new Blob([csv], { type: "text/csv" });
@@ -96,7 +97,6 @@ function downloadCSV(filename, headers, data) {
 /* ================= MAIN ================= */
 document.addEventListener("DOMContentLoaded", () => {
   const $ = id => document.getElementById(id);
-  const $$ = selector => document.querySelectorAll(selector);
 
   const fileInput = $("csvFile");
   const analyzeBtn = $("analyzeBtn");
@@ -105,9 +105,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const rowCountEl = $("rowCount");
   const columnCountEl = $("columnCount");
 
-  const agentCounts = $$("#agentCount");
-  const possibleCounts = $$("#possibleCount");
-  const otherCounts = $$("#otherCount");
+  const agentCount = $("agentCount");
+  const possibleCount = $("possibleCount");
+  const otherCount = $("otherCount");
 
   const agentsTable = $("agentsPreviewTable");
   const possibleTable = $("possiblePreviewTable");
@@ -117,124 +117,78 @@ document.addEventListener("DOMContentLoaded", () => {
   const downloadPossible = $("downloadPossible");
   const downloadOthers = $("downloadOthers");
 
-  const resultsSection = $("resultsPreview");
+  const keywordList = $("keywordList");
+  const addKeywordBtn = $("addKeywordBtn");
+  const newKeywordInput = $("newKeyword");
 
-  let pendingFile = null;
+  let parsedRows = [];
+  let headers = [];
+
   analyzeBtn.disabled = true;
-  resultsSection.style.display = "none";
+  renderKeywords(keywordList);
 
-  /* ================= FILE FLOW ================= */
+  /* ===== FILE UPLOAD ===== */
   fileInput.onchange = () => {
-    pendingFile = fileInput.files[0];
-    if (!pendingFile) return;
-
-    fileNameEl.textContent = "File name: " + pendingFile.name;
-    analyzeBtn.disabled = false;
-  };
-
-  /* ================= ANALYZE ================= */
-  analyzeBtn.onclick = () => {
-    if (!pendingFile) return;
-
-    analyzeBtn.disabled = true;
-    analyzeBtn.textContent = "Analyzing...";
+    const file = fileInput.files[0];
+    if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = e => processCSV(e.target.result);
-    reader.readAsText(pendingFile);
+    reader.onload = e => {
+      const parsed = parseCSV(e.target.result);
+      headers = parsed[0];
+      parsedRows = parsed.slice(1);
+
+      fileNameEl.textContent = file.name;
+      rowCountEl.textContent = parsedRows.length;
+      columnCountEl.textContent = headers.length;
+
+      analyzeBtn.disabled = false;
+    };
+    reader.readAsText(file);
   };
 
-  /* ================= CORE LOGIC ================= */
-  function processCSV(csvText) {
-    const parsed = parseCSV(csvText);
-    if (!parsed.length) return;
+  /* ===== ADD KEYWORD ===== */
+  addKeywordBtn.onclick = () => {
+    const val = normalize(newKeywordInput.value);
+    if (val && !keywords.includes(val)) {
+      keywords.push(val);
+      saveKeywords();
+      renderKeywords(keywordList);
+      newKeywordInput.value = "";
+    }
+  };
 
-    const baseHeaders = parsed[0];
-    const headers = [
-      ...baseHeaders,
-      "leadcleer_agent_status",
-      "leadcleer_detection_sources",
-      "leadcleer_confidence"
-    ];
+  /* ===== ANALYZE ===== */
+  analyzeBtn.onclick = () => {
+    const agents = [], possible = [], others = [];
 
-    const rows = parsed.slice(1);
-
-    rowCountEl.textContent = "Total rows: " + rows.length;
-    columnCountEl.textContent = "Detected columns: " + headers.length;
-
-    const agents = [];
-    const possible = [];
-    const others = [];
-
-    const emailCols = baseHeaders
-      .map((h, i) => normalize(h).includes("email") ? i : null)
-      .filter(i => i !== null);
-
-    const nameCols = baseHeaders
-      .map((h, i) =>
-        ["name", "first", "last"].some(k => normalize(h).includes(k)) ? i : null
-      )
-      .filter(i => i !== null);
-
-    const companyCols = baseHeaders
-      .map((h, i) =>
-        ["company", "broker"].some(k => normalize(h).includes(k)) ? i : null
-      )
-      .filter(i => i !== null);
-
-    rows.forEach(r => {
+    parsedRows.forEach(r => {
       let score = 0;
-      const sources = [];
 
-      if (emailCols.some(i => keywords.some(k => normalize(r[i]).includes(k)))) {
-        score += 2; sources.push("Email");
-      }
+      r.forEach(cell => {
+        keywords.forEach(k => {
+          if (normalize(cell).includes(k)) score++;
+        });
+      });
 
-      if (companyCols.some(i => keywords.some(k => normalize(r[i]).includes(k)))) {
-        score += 2; sources.push("Company");
-      }
-
-      if (nameCols.some(i => keywords.some(k => normalize(r[i]).includes(k)))) {
-        score += 1; sources.push("Name");
-      }
-
-      let status = "Other";
-      let confidence = "Low";
-
-      if (score >= 3) {
-        status = "Agent"; confidence = "High";
-      } else if (score === 2) {
-        status = "Possible Agent"; confidence = "Medium";
-      }
-
-      const fullRow = [...r, status, sources.join(" + ") || "None", confidence];
-
-      if (status === "Agent") agents.push(fullRow);
-      else if (status === "Possible Agent") possible.push(fullRow);
-      else others.push(fullRow);
+      if (score >= 3) agents.push(r);
+      else if (score === 2) possible.push(r);
+      else others.push(r);
     });
 
-    /* ================= UI UPDATE ================= */
-    agentCounts.forEach(el => el.textContent = agents.length);
-    possibleCounts.forEach(el => el.textContent = possible.length);
-    otherCounts.forEach(el => el.textContent = others.length);
+    agentCount.textContent = agents.length;
+    possibleCount.textContent = possible.length;
+    otherCount.textContent = others.length;
 
     renderPreview(agentsTable, headers, agents);
     renderPreview(possibleTable, headers, possible);
     renderPreview(othersTable, headers, others);
 
-    resultsSection.style.display = "block";
-
     downloadAgents.onclick = () =>
-      downloadCSV("agents_high_confidence.csv", headers, agents);
-
+      downloadCSV("agents.csv", headers, agents);
     downloadPossible.onclick = () =>
-      downloadCSV("agents_possible_review.csv", headers, possible);
-
+      downloadCSV("possible_agents.csv", headers, possible);
     downloadOthers.onclick = () =>
       downloadCSV("other_contacts.csv", headers, others);
-
-    analyzeBtn.textContent = "Analyze CSV";
-    analyzeBtn.disabled = false;
-  }
+  };
 });
