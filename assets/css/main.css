@@ -371,153 +371,170 @@ h2 {
     gap: 32px;
   }
 }
-/* =====================================================
-   FILTER REAL ESTATE TOOL (APPENDED TO main.css)
-   ===================================================== */
+/* ===============================
+   FILTER REAL ESTATE – FINAL CSS
+   Add to bottom of main.css
+================================ */
 
-.filter-agents-page .tool-container {
-  max-width: 1100px;
-  margin: 80px auto 120px;
-  padding: 0 20px;
+.filter-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 20px;
 }
 
-.tool-header {
-  margin-bottom: 60px;
-}
-
-.tool-header h1 {
-  font-size: 2.4rem;
-  font-weight: 800;
-}
-
-.tool-subtitle {
-  color: var(--muted);
-  max-width: 720px;
-}
-
-/* ===== STEPS ===== */
-.tool-step {
+.filter-section {
+  background: linear-gradient(180deg, #0f1323, #0b0f1a);
+  border-radius: 20px;
+  padding: 32px;
   margin-bottom: 48px;
 }
 
-.tool-card {
-  background: linear-gradient(180deg, #14172a, #0d0f1d);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 32px;
+.filter-section h2 {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-/* ===== UPLOAD ===== */
+.filter-section p {
+  text-align: center;
+  opacity: 0.85;
+  margin-bottom: 24px;
+}
+
 .upload-box {
-  margin-top: 20px;
-  padding: 32px;
-  border: 2px dashed var(--border);
+  border: 2px dashed rgba(255,255,255,0.15);
   border-radius: 14px;
+  padding: 28px;
   text-align: center;
 }
 
-/* ===== META PILLS ===== */
-.meta-pills {
+.file-meta {
   display: flex;
-  gap: 12px;
+  justify-content: center;
+  gap: 16px;
   flex-wrap: wrap;
-  margin-top: 16px;
+  margin-top: 20px;
 }
 
 .meta-pill {
   background: #fff;
-  color: #111;
-  padding: 10px 16px;
+  color: #000;
+  padding: 8px 16px;
   border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 14px;
 }
 
-/* ===== KEYWORDS ===== */
-.keyword-list {
+/* Keywords */
+.keyword-wrap {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin: 16px 0;
+  justify-content: center;
 }
 
-.keyword-pill {
+.keyword {
   background: #fff;
-  color: #111;
-  padding: 8px 14px;
+  color: #000;
+  padding: 6px 12px;
   border-radius: 999px;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-.keyword-add {
+  font-size: 13px;
   display: flex;
-  gap: 12px;
+  gap: 6px;
+  align-items: center;
 }
 
-.keyword-add input {
+.keyword span {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.keyword-input {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.keyword-input input {
   flex: 1;
   padding: 12px;
   border-radius: 10px;
-  border: 1px solid var(--border);
+  border: none;
 }
 
-/* ===== ANALYZE ===== */
-.analyze-summary {
+.keyword-input button {
+  padding: 12px 20px;
+  border-radius: 10px;
+}
+
+/* Analyze */
+.analyze-row {
   display: flex;
+  justify-content: center;
   gap: 16px;
-  margin-top: 20px;
   flex-wrap: wrap;
+  margin-top: 20px;
 }
 
-/* ===== RESULTS ===== */
-.results-step {
-  display: none;
+.stat-pill {
+  background: #fff;
+  color: #000;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 600;
 }
 
-.results-step.show {
-  display: block;
-}
-
-.results-grid {
+/* Preview */
+.preview-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 32px;
 }
 
-.result-card {
-  background: #0f1220;
+.preview-box {
+  background: #0c1020;
   border-radius: 16px;
-  padding: 24px;
-  border: 1px solid var(--border);
+  padding: 20px;
+  overflow: hidden;
+}
+
+.preview-box h3 {
+  margin-bottom: 12px;
 }
 
 .table-wrap {
   overflow-x: auto;
-  margin: 16px 0;
+  overflow-y: auto;
+  max-height: 260px;
 }
 
-.preview-table {
+table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 900px;
 }
 
-.preview-table th,
-.preview-table td {
-  padding: 10px;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.85rem;
+th, td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
   white-space: nowrap;
 }
 
-.preview-table th {
-  color: var(--muted);
-  text-align: left;
+th {
+  background: rgba(255,255,255,0.05);
+  position: sticky;
+  top: 0;
 }
 
-/* ===== DOWNLOAD BUTTONS ===== */
-.result-actions {
+/* Downloads */
+.download-row {
   display: flex;
-  gap: 16px;
-  margin-top: 16px;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.download-row button {
+  padding: 14px 24px;
+  border-radius: 12px;
+  min-width: 220px;
 }
