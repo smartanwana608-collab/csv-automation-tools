@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="../assets/css/filter-agents.css" />
 </head>
 
-<body>
+<body class="filter-agents-page">
 
 <!-- ===============================
 TOP NAV
@@ -34,9 +34,7 @@ FILTER TOOL
 ================================ -->
 <main class="tool-container">
 
-  <!-- ===============================
-  TOOL HEADER
-  ================================ -->
+  <!-- TOOL HEADER -->
   <header class="tool-header">
     <h1>Filter Real Estate Agents</h1>
     <p class="tool-subtitle">
@@ -44,9 +42,7 @@ FILTER TOOL
     </p>
   </header>
 
-  <!-- ===============================
-  STEP 1 — UPLOAD
-  ================================ -->
+  <!-- STEP 1 — UPLOAD -->
   <section class="tool-step">
     <div class="tool-card upload-card">
       <h2 class="step-title">1. Upload CSV</h2>
@@ -58,9 +54,7 @@ FILTER TOOL
     </div>
   </section>
 
-  <!-- ===============================
-  STEP 2 — FILE DETAILS
-  ================================ -->
+  <!-- STEP 2 — FILE OVERVIEW -->
   <section class="tool-step">
     <div class="tool-card meta-card">
       <h2 class="step-title">2. File Overview</h2>
@@ -73,9 +67,7 @@ FILTER TOOL
     </div>
   </section>
 
-  <!-- ===============================
-  STEP 3 — KEYWORDS (OPTIONAL)
-  ================================ -->
+  <!-- STEP 3 — KEYWORDS -->
   <section class="tool-step">
     <div class="tool-card keywords-card">
       <h2 class="step-title">3. Optional Keywords</h2>
@@ -85,7 +77,6 @@ FILTER TOOL
         System keywords are applied automatically.
       </p>
 
-      <!-- User-added keywords only -->
       <div id="keywordList" class="keyword-list"></div>
 
       <div class="keyword-add">
@@ -99,9 +90,7 @@ FILTER TOOL
     </div>
   </section>
 
-  <!-- ===============================
-  STEP 4 — ANALYZE
-  ================================ -->
+  <!-- STEP 4 — ANALYZE -->
   <section class="tool-step">
     <div class="tool-card analyze-card">
       <h2 class="step-title">4. Analyze</h2>
@@ -111,24 +100,15 @@ FILTER TOOL
       </button>
 
       <div class="analyze-summary">
-        <span class="meta-pill">
-          <strong id="agentCount">0</strong> Agents
-        </span>
-        <span class="meta-pill">
-          <strong id="possibleCount">0</strong> Possible
-        </span>
-        <span class="meta-pill">
-          <strong id="otherCount">0</strong> Others
-        </span>
+        <span class="meta-pill"><strong id="agentCount">0</strong> Agents</span>
+        <span class="meta-pill"><strong id="possibleCount">0</strong> Possible</span>
+        <span class="meta-pill"><strong id="otherCount">0</strong> Others</span>
       </div>
     </div>
   </section>
 
-  <!-- ===============================
-  STEP 5 — RESULTS
-  ================================ -->
+  <!-- STEP 5 — RESULTS -->
   <section class="tool-step results-step" id="resultsPreview">
-
     <div class="tool-card results-card">
       <h2 class="results-title">Results Preview</h2>
 
@@ -192,25 +172,49 @@ FILTER TOOL
 </main>
 
 <!-- ===============================
-DISCLAIMER MODAL
+FOOTER
 ================================ -->
-<div id="disclaimerModal" class="disclaimer-modal">
-  <div class="disclaimer-box">
-    <h3>Privacy Notice</h3>
-    <p>
-      Your CSV is processed locally in your browser.
-      No data is uploaded or stored on our servers.
-    </p>
-    <div class="disclaimer-actions">
-      <button id="disclaimerCancel" class="btn secondary">Cancel</button>
-      <button id="disclaimerAccept" class="btn primary">I Understand</button>
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <span class="logo-dot"></span>
+        <span class="logo-text">Leadcleer</span>
+      </div>
+      <p class="footer-tagline">
+        Turn messy CSVs into clean, usable leads — fast.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <div class="footer-column">
+        <strong>Product</strong>
+        <a href="../features.html">Features</a>
+        <a href="../pricing.html">Pricing</a>
+        <a href="../how-it-works.html">How It Works</a>
+      </div>
+
+      <div class="footer-column">
+        <strong>Legal</strong>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms & Conditions</a>
+      </div>
+
+      <div class="footer-column">
+        <strong>Contact</strong>
+        <a href="mailto:smartanwana608@gmail.com">
+          smartanwana608@gmail.com
+        </a>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ===============================
-SCRIPT
-================================ -->
+  <div class="footer-bottom">
+    © 2026 Leadcleer. All rights reserved.
+  </div>
+</footer>
+
+<!-- SCRIPT -->
 <script src="../assets/js/filter-agents.js"></script>
 
 </body>
