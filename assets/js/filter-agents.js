@@ -115,3 +115,14 @@ function downloadCSV(type) {
   a.download = `${type}.csv`;
   a.click();
 }
+// Mobile menu toggle — page-only
+document.addEventListener("DOMContentLoaded", () => {
+  const toggle = document.getElementById("menuToggle");
+  const nav = document.getElementById("mobileNav");
+
+  if (toggle && nav) {
+    toggle.addEventListener("click", () => {
+      nav.classList.toggle("open");
+    });
+  }
+});
