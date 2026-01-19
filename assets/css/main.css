@@ -526,3 +526,10 @@ RESULT PREVIEW (SAFE ADDITION – NO BREAKING CHANGES)
 .result-actions {
   text-align: right;
 }
+/* ===============================
+FILTER TOOL WRAPPER (PAGE-SAFE)
+=============================== */
+.tool-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
