@@ -4,8 +4,6 @@ import { filterRealEstate } from "./actions/filter-real-estate.js";
 import { removeDuplicates } from "./actions/remove-duplicates.js";
 import { removeMissingEmails } from "./actions/remove-missing-emails.js";
 
-let parsedRows = [];
-
 /* ================= ACTION REGISTRY ================= */
 
 const ACTIONS = [
@@ -55,14 +53,21 @@ function matchAction(prompt) {
       return action;
     }
   }
-
   return null;
+}
+
+function parseCSV(text) {
+  return text
+    .split("\n")
+    .map(r => r.split(","))
+    .filter(r => r.length > 1);
 }
 
 /* ================= RENDERING ================= */
 
 function renderResults(result) {
   const container = document.getElementById("promptResults");
+  container.style.display = "block";
   container.innerHTML = "";
 
   const section = document.createElement("div");
@@ -72,7 +77,7 @@ function renderResults(result) {
     <h2>${result.title}</h2>
     <p>${result.summary}</p>
 
-    <h3>Preview</h3>
+    <h3>Preview (first 5 rows)</h3>
     ${renderTable(result.preview)}
 
     <div class="download-actions">
@@ -122,7 +127,9 @@ window.downloadCSV = function () {
   const headers = Object.keys(rows[0]);
   const csv = [
     headers.join(","),
-    ...rows.map(r => headers.map(h => `"${r[h] ?? ""}"`).join(","))
+    ...rows.map(r =>
+      headers.map(h => `"${r[h] ?? ""}"`).join(",")
+    )
   ].join("\n");
 
   const blob = new Blob([csv], { type: "text/csv" });
@@ -141,9 +148,25 @@ window.downloadCSV = function () {
 document.addEventListener("DOMContentLoaded", () => {
   const runBtn = document.getElementById("runPromptBtn");
   const promptInput = document.getElementById("promptInput");
+  const fileInput = document.getElementById("csvFile");
+
+  let rows = [];
+
+  fileInput.addEventListener("change", e => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const data = parseCSV(reader.result);
+      rows = data.slice(1); // remove header row
+      runBtn.disabled = false;
+    };
+    reader.readAsText(e.target.files[0]);
+  });
 
   runBtn.addEventListener("click", () => {
-    const action = matchAction(promptInput.value);
+    const prompt = promptInput.value.trim();
+    if (!prompt) return;
+
+    const action = matchAction(prompt);
 
     if (!action) {
       document.getElementById("promptResults").innerHTML = `
@@ -157,11 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const result = action.handler(parsedRows);
+    const result = action.handler(rows);
     renderResults(result);
-  });
-
-  document.addEventListener("csvParsed", e => {
-    parsedRows = e.detail.rows;
   });
 });
