@@ -1,0 +1,156 @@
+/* =====================================================
+FILTER AGENTS PAGE — ISOLATED & FINAL
+Does NOT affect other pages
+===================================================== */
+
+.filter-agents-page .tool-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 24px 120px;
+}
+
+/* ---------------- HEADER ---------------- */
+.filter-agents-page .tool-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.filter-agents-page .tool-header h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.filter-agents-page .tool-subtitle {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+/* ---------------- TOOL CARDS ---------------- */
+.filter-agents-page .tool-card {
+  background: #0c1022;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px;
+  margin-bottom: 28px;
+}
+
+/* ---------------- UPLOAD ---------------- */
+.filter-agents-page .upload-card {
+  display: flex;
+  justify-content: center;
+}
+
+.filter-agents-page .upload-box {
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+  padding: 36px;
+  background: #0b0f22;
+}
+
+.filter-agents-page .upload-hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ---------------- META PILLS ---------------- */
+.filter-agents-page .meta-card {
+  display: flex;
+  justify-content: center;
+}
+
+.filter-agents-page .meta-pills {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.filter-agents-page .meta-pill {
+  background: #ffffff;
+  color: #0b0d12;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* ---------------- KEYWORDS ---------------- */
+.filter-agents-page .keywords-card {
+  text-align: center;
+}
+
+.filter-agents-page .keyword-list {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.filter-agents-page .keyword-chip {
+  background: rgba(255,255,255,0.12);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+/* ---------------- ANALYZE ---------------- */
+.filter-agents-page .analyze-card {
+  text-align: center;
+}
+
+.filter-agents-page .analyze-summary {
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ---------------- RESULTS ---------------- */
+.filter-agents-page .results-title {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.filter-agents-page .results-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 36px;
+}
+
+/* ---------------- TABLE (PROTOTYPE STYLE) ---------------- */
+.filter-agents-page .table-wrap {
+  max-height: 300px;
+  overflow-x: auto;
+  overflow-y: auto;
+  background: #0b0f22;
+  border-radius: 12px;
+}
+
+.filter-agents-page .preview-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.filter-agents-page .preview-table th {
+  position: sticky;
+  top: 0;
+  background: #0c1022;
+  padding: 10px;
+  text-align: left;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.filter-agents-page .preview-table td {
+  padding: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  white-space: nowrap;
+}
