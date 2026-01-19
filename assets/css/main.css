@@ -410,3 +410,164 @@ h2 {
     font-size: 1rem;
   }
 }
+/* =====================================================
+FILTER REAL ESTATE TOOL — SAFE OVERRIDES
+Affects ONLY pages with .filter-agents-page
+===================================================== */
+
+.filter-agents-page section {
+  padding: 0 !important;
+  margin-bottom: 48px;
+}
+
+.filter-agents-page h2 {
+  text-align: left;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+}
+
+/* Main tool container */
+.filter-agents-page .tool-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 24px 120px;
+}
+
+/* Tool header */
+.filter-agents-page .tool-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.filter-agents-page .tool-header h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.filter-agents-page .tool-subtitle {
+  max-width: 640px;
+  margin: 0 auto;
+  color: var(--muted);
+}
+
+/* Step wrapper */
+.filter-agents-page .tool-step {
+  display: flex;
+  justify-content: center;
+}
+
+/* Tool cards */
+.filter-agents-page .tool-card {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px;
+}
+
+/* Upload */
+.filter-agents-page .upload-box {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 36px;
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+  text-align: center;
+  background: #0b0f22;
+}
+
+/* Meta pills */
+.filter-agents-page .meta-pills {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.filter-agents-page .meta-pill {
+  background: #fff;
+  color: #0b0d12;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Keywords */
+.filter-agents-page .keyword-list {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.filter-agents-page .keyword-add {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Analyze */
+.filter-agents-page .analyze-card {
+  text-align: center;
+}
+
+.filter-agents-page .analyze-summary {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* Results */
+.filter-agents-page .results-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 36px;
+}
+
+.filter-agents-page .result-card {
+  background: #0c1022;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px;
+}
+
+/* Tables */
+.filter-agents-page .table-wrap {
+  max-height: 320px;
+  overflow: auto;
+  border-radius: 12px;
+  background: #0b0f22;
+}
+
+.filter-agents-page .preview-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.filter-agents-page .preview-table th {
+  position: sticky;
+  top: 0;
+  background: #0c1022;
+  padding: 10px;
+  color: var(--muted);
+}
+
+.filter-agents-page .preview-table td {
+  padding: 10px;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .filter-agents-page .tool-header h1 {
+    font-size: 2rem;
+  }
+}
