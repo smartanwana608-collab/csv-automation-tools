@@ -371,6 +371,7 @@ h2 {
     gap: 32px;
   }
 }
+
 /* ================= MOBILE NAV FIX ================= */
 .menu-toggle {
   display: none;
@@ -410,6 +411,7 @@ h2 {
     font-size: 1rem;
   }
 }
+
 /* ================= DISCLAIMER MODAL ================= */
 .disclaimer-modal {
   position: fixed;
@@ -449,4 +451,78 @@ h2 {
   gap: 12px;
   justify-content: center;
   margin-top: 20px;
+}
+
+/* =====================================================
+RESULT PREVIEW (SAFE ADDITION – NO BREAKING CHANGES)
+===================================================== */
+
+.result-card {
+  background: linear-gradient(180deg, #0f1325, #0a0d1a);
+  border-radius: 18px;
+  padding: 28px;
+  margin-bottom: 50px;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.count-badge {
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.agent-badge {
+  background: rgba(120, 92, 255, 0.15);
+  color: #8f7bff;
+}
+
+.possible-badge {
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+}
+
+.other-badge {
+  background: rgba(200, 200, 200, 0.12);
+  color: #ccc;
+}
+
+.table-wrap {
+  max-height: 320px;
+  overflow: auto;
+  border-radius: 12px;
+  margin-bottom: 22px;
+}
+
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.preview-table th,
+.preview-table td {
+  padding: 10px 14px;
+  white-space: nowrap;
+}
+
+.preview-table thead {
+  position: sticky;
+  top: 0;
+  background: #0c1022;
+  z-index: 2;
+}
+
+.preview-table tr:not(:last-child) {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.result-actions {
+  text-align: right;
 }
