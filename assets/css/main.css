@@ -533,3 +533,21 @@ FILTER TOOL WRAPPER (PAGE-SAFE)
   max-width: 1200px;
   margin: 0 auto;
 }
+/* =====================================================
+FILTER REAL ESTATE – RESULTS GRID (SAFE, SCOPED FIX)
+===================================================== */
+
+#resultsPreview .results-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+/* Desktop refinement */
+@media (min-width: 900px) {
+  #resultsPreview .results-grid {
+    gap: 40px;
+  }
+}
