@@ -1,231 +1,145 @@
-/* =====================================================
-FILTER REAL ESTATE AGENTS — FINAL, HARD-SCOPED
-Does NOT affect any other page
-===================================================== */
-
-/* ================= PAGE SCOPE ================= */
+/* PAGE SCOPE */
 .filter-agents-page {
   background: var(--bg);
 }
 
-/* ================= NEUTRALIZE MAIN.CSS ================= */
+/* HARD RESET AGAINST main.css */
 .filter-agents-page section {
   padding: 0 !important;
+  margin: 0 !important;
 }
 
-.filter-agents-page h2 {
-  text-align: left;
-  font-size: 1.35rem;
-  margin: 0 0 24px 0;
-}
-
-/* ================= MAIN CONTAINER ================= */
+/* CONTAINER */
 .filter-agents-page .tool-container {
   max-width: 1100px;
   margin: 0 auto;
   padding: 64px 24px 120px;
 }
 
-/* ================= HEADER ================= */
-.filter-agents-page .tool-header {
+/* HEADER */
+.tool-header {
   text-align: center;
-  margin-bottom: 72px;
+  margin-bottom: 64px;
 }
 
-.filter-agents-page .tool-header h1 {
+.tool-header h1 {
   font-size: 2.6rem;
   font-weight: 800;
-  margin-bottom: 12px;
 }
 
-.filter-agents-page .tool-subtitle {
+.tool-subtitle {
+  color: var(--muted);
   max-width: 640px;
   margin: 0 auto;
-  color: var(--muted);
 }
 
-/* ================= STEPS ================= */
-.filter-agents-page .tool-step {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 72px;
+/* STEPS */
+.tool-step {
+  margin-bottom: 64px;
 }
 
-.filter-agents-page .tool-step:last-child {
-  margin-bottom: 0;
-}
-
-/* ================= STEP TITLE ================= */
-.filter-agents-page .step-title {
+.step-title {
   text-align: center;
   font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
-/* ================= TOOL CARD ================= */
-.filter-agents-page .tool-card {
-  width: 100%;
+/* CARD */
+.tool-card {
   background: #0c1022;
   border: 1px solid var(--border);
   border-radius: 18px;
-  padding: 36px;
+  padding: 32px;
 }
 
-/* ================= UPLOAD ================= */
-.filter-agents-page .upload-box {
-  max-width: 520px;
-  margin: 0 auto;
-  padding: 42px;
-  border-radius: 16px;
+/* UPLOAD */
+.upload-box {
   border: 1px dashed var(--border);
-  background: #0b0f22;
+  padding: 40px;
+  border-radius: 16px;
   text-align: center;
 }
 
-.filter-agents-page .upload-hint {
-  margin-top: 10px;
-  color: var(--muted);
-}
-
-/* ================= META ================= */
-.filter-agents-page .meta-pills {
+/* META */
+.meta-pills {
   display: flex;
-  gap: 14px;
   justify-content: center;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
-.filter-agents-page .meta-pill {
+.meta-pill {
   background: #fff;
-  color: #0b0d12;
+  color: #000;
   padding: 8px 16px;
   border-radius: 999px;
   font-weight: 600;
-  font-size: 0.85rem;
 }
 
-/* ================= KEYWORDS ================= */
-.filter-agents-page .keywords-info {
-  text-align: center;
-  max-width: 600px;
-  margin: 0 auto 22px;
-  color: var(--muted);
-}
-
-.filter-agents-page .keyword-list {
+/* KEYWORDS */
+.keyword-list {
   display: flex;
   justify-content: center;
   gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
-.filter-agents-page .keyword-chip {
-  background: rgba(255,255,255,0.12);
+.keyword-chip {
+  background: rgba(255,255,255,0.15);
   padding: 6px 12px;
   border-radius: 999px;
 }
 
-.filter-agents-page .keyword-add {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-/* ================= ANALYZE ================= */
-.filter-agents-page .analyze-card {
+/* ANALYZE */
+.analyze-card {
   text-align: center;
 }
 
-.filter-agents-page .analyze-summary {
-  margin-top: 24px;
+.analyze-summary {
   display: flex;
   justify-content: center;
   gap: 14px;
-  flex-wrap: wrap;
+  margin-top: 18px;
 }
 
-/* ================= RESULTS ================= */
-.filter-agents-page .results-step {
-  margin-top: 100px;
+/* RESULTS */
+#resultsPreview {
+  display: none;
 }
 
-.filter-agents-page .results-title {
-  text-align: center;
-  margin-bottom: 48px;
+#resultsPreview.show {
+  display: block;
 }
 
-/* ================= RESULT GRID ================= */
-.filter-agents-page .results-grid {
+.results-grid {
   display: grid;
-  grid-template-columns: 1fr;
   gap: 40px;
 }
 
-/* ================= RESULT CARD ================= */
-.filter-agents-page .result-card {
+.result-card {
   background: #0c1022;
   border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 28px;
+  padding: 24px;
+  border-radius: 16px;
 }
 
-/* ================= TABLE ================= */
-.filter-agents-page .table-wrap {
+.table-wrap {
   max-height: 320px;
   overflow: auto;
   background: #0b0f22;
   border-radius: 12px;
 }
 
-.filter-agents-page .preview-table {
+.preview-table {
   width: max-content;
   min-width: 100%;
   border-collapse: collapse;
   font-size: 13px;
 }
 
-.filter-agents-page .preview-table th {
-  position: sticky;
-  top: 0;
-  background: #0c1022;
+.preview-table th,
+.preview-table td {
   padding: 10px;
-  color: var(--muted);
-}
-
-.filter-agents-page .preview-table td {
-  padding: 10px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
   white-space: nowrap;
-}
-
-/* ================= ACTIONS ================= */
-.filter-agents-page .result-actions {
-  margin-top: 18px;
-  text-align: right;
-}
-
-/* ================= RESULTS VISIBILITY ================= */
-.filter-agents-page #resultsPreview {
-  display: none;
-}
-
-.filter-agents-page #resultsPreview.show {
-  display: block;
-}
-
-/* ================= MOBILE ================= */
-@media (max-width: 768px) {
-  .filter-agents-page .tool-header h1 {
-    font-size: 2rem;
-  }
-
-  .filter-agents-page .tool-step {
-    margin-bottom: 48px;
-  }
-
-  .filter-agents-page .upload-box {
-    padding: 28px;
-  }
 }
