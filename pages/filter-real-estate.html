@@ -5,14 +5,16 @@
   <title>Filter Real Estate Agents | Leadcleer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Main Styles -->
+  <!-- Global CSS -->
   <link rel="stylesheet" href="../assets/css/main.css" />
+  <!-- Tool-specific CSS -->
+  <link rel="stylesheet" href="../assets/css/filter-agents.css" />
 </head>
 
 <body>
 
 <!-- ===============================
-TOP BAR
+TOP NAV
 ================================ -->
 <header class="nav">
   <div class="nav-container">
@@ -28,19 +30,21 @@ TOP BAR
 </header>
 
 <!-- ===============================
-MAIN TOOL
+FILTER TOOL
 ================================ -->
 <main class="tool-container">
 
-  <!-- ===== TITLE ===== -->
-  <section class="tool-header">
+  <!-- ===== HEADER ===== -->
+  <header class="tool-header">
     <h1>Filter Real Estate Agents</h1>
     <p class="tool-subtitle">
       Upload a CSV and intelligently classify contacts using confidence-based detection.
     </p>
-  </section>
+  </header>
 
-  <!-- ===== UPLOAD ===== -->
+  <!-- ===============================
+  STEP 1: UPLOAD
+  ================================ -->
   <section class="tool-card upload-card">
     <div class="upload-box">
       <input type="file" id="csvFile" accept=".csv" />
@@ -48,7 +52,9 @@ MAIN TOOL
     </div>
   </section>
 
-  <!-- ===== FILE META ===== -->
+  <!-- ===============================
+  STEP 2: FILE META
+  ================================ -->
   <section class="tool-card meta-card">
     <div class="meta-pills">
       <span id="fileName" class="meta-pill">File —</span>
@@ -57,10 +63,12 @@ MAIN TOOL
     </div>
   </section>
 
-  <!-- ===== KEYWORDS (USER ONLY) ===== -->
+  <!-- ===============================
+  STEP 3: KEYWORDS (SECONDARY)
+  ================================ -->
   <section class="tool-card keywords-card">
     <p class="keywords-info">
-      Keywords matched against <strong>Email · Company · Name</strong>
+      Keyword matches across <strong>Email · Company · Name</strong>
     </p>
 
     <div id="keywordList" class="keyword-list"></div>
@@ -71,21 +79,26 @@ MAIN TOOL
     </div>
   </section>
 
-  <!-- ===== ANALYZE ===== -->
+  <!-- ===============================
+  STEP 4: ANALYZE
+  ================================ -->
   <section class="tool-card analyze-card">
     <button id="analyzeBtn" class="btn primary" disabled>
       Analyze CSV
     </button>
 
     <div class="analyze-summary">
-      <span class="meta-pill"><strong id="agentTotal">0</strong> Agents</span>
-      <span class="meta-pill"><strong id="possibleTotal">0</strong> Possible Agents</span>
-      <span class="meta-pill"><strong id="otherTotal">0</strong> Other Contacts</span>
+      <span class="meta-pill"><strong id="agentCount">0</strong> Agents</span>
+      <span class="meta-pill"><strong id="possibleCount">0</strong> Possible</span>
+      <span class="meta-pill"><strong id="otherCount">0</strong> Others</span>
     </div>
   </section>
 
-  <!-- ===== RESULTS ===== -->
+  <!-- ===============================
+  STEP 5: RESULTS
+  ================================ -->
   <section class="tool-card results-card" id="resultsPreview">
+
     <h2 class="results-title">Results Preview</h2>
 
     <div class="results-grid">
@@ -94,9 +107,6 @@ MAIN TOOL
       <div class="result-card">
         <div class="result-header">
           <h3>Real Estate Agents</h3>
-          <span class="count-badge agent-badge">
-            <span id="agentCount">0</span> Found
-          </span>
         </div>
 
         <div class="table-wrap">
@@ -114,9 +124,6 @@ MAIN TOOL
       <div class="result-card">
         <div class="result-header">
           <h3>Possible Agents</h3>
-          <span class="count-badge possible-badge">
-            <span id="possibleCount">0</span> Found
-          </span>
         </div>
 
         <div class="table-wrap">
@@ -134,9 +141,6 @@ MAIN TOOL
       <div class="result-card">
         <div class="result-header">
           <h3>Other Contacts</h3>
-          <span class="count-badge other-badge">
-            <span id="otherCount">0</span> Found
-          </span>
         </div>
 
         <div class="table-wrap">
