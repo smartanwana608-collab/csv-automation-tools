@@ -658,3 +658,42 @@ textarea {
   font-size: 0.85rem;
   overflow-x: auto;
 }
+/* ================= PROMPT RESULTS VISIBILITY FIX ================= */
+
+#promptResults {
+  margin-top: 40px;
+}
+
+#promptResults .tool-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+#promptResults table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 0.85rem;
+}
+
+#promptResults th,
+#promptResults td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  color: var(--text);
+}
+
+#promptResults th {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+#promptResults .download-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
