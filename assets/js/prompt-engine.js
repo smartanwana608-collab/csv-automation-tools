@@ -16,7 +16,12 @@ const ACTIONS = [
       "realty",
       "agents",
       "brokerage",
-      "broker"
+      "broker",
+      "remax",
+      "sutton",
+      "rlp",
+      "c21",
+      "exp"
     ]
   },
   {
@@ -39,6 +44,10 @@ const ACTIONS = [
   }
 ];
 
+/* ================= STATE ================= */
+
+let parsedRows = [];
+
 /* ================= HELPERS ================= */
 
 function normalize(text) {
@@ -54,13 +63,6 @@ function matchAction(prompt) {
     }
   }
   return null;
-}
-
-function parseCSV(text) {
-  return text
-    .split("\n")
-    .map(r => r.split(","))
-    .filter(r => r.length > 1);
 }
 
 /* ================= RENDERING ================= */
@@ -80,17 +82,20 @@ function renderResults(result) {
     <h3>Preview (first 5 rows)</h3>
     ${renderTable(result.preview)}
 
-    <div class="download-actions">
+    <div class="download-actions" style="margin-top:20px; display:flex; gap:12px;">
       <button class="btn primary" onclick="downloadCSV()">Download CSV</button>
     </div>
   `;
 
   container.appendChild(section);
+
   window.__DOWNLOAD_DATA__ = result.download;
 }
 
 function renderTable(rows) {
-  if (!rows || !rows.length) return "<p>No rows found.</p>";
+  if (!rows || !rows.length) {
+    return "<p>No rows found.</p>";
+  }
 
   const headers = Object.keys(rows[0]);
 
@@ -103,15 +108,11 @@ function renderTable(rows) {
           </tr>
         </thead>
         <tbody>
-          ${rows
-            .slice(0, 5)
-            .map(
-              row =>
-                `<tr>
-                  ${headers.map(h => `<td>${row[h] ?? ""}</td>`).join("")}
-                </tr>`
-            )
-            .join("")}
+          ${rows.slice(0, 5).map(row => `
+            <tr>
+              ${headers.map(h => `<td>${row[h] ?? ""}</td>`).join("")}
+            </tr>
+          `).join("")}
         </tbody>
       </table>
     </div>
@@ -127,9 +128,7 @@ window.downloadCSV = function () {
   const headers = Object.keys(rows[0]);
   const csv = [
     headers.join(","),
-    ...rows.map(r =>
-      headers.map(h => `"${r[h] ?? ""}"`).join(",")
-    )
+    ...rows.map(r => headers.map(h => `"${r[h] ?? ""}"`).join(","))
   ].join("\n");
 
   const blob = new Blob([csv], { type: "text/csv" });
@@ -145,26 +144,26 @@ window.downloadCSV = function () {
 
 /* ================= EVENTS ================= */
 
+document.addEventListener("csvParsed", e => {
+  parsedRows = e.detail.rows;
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   const runBtn = document.getElementById("runPromptBtn");
   const promptInput = document.getElementById("promptInput");
-  const fileInput = document.getElementById("csvFile");
-
-  let rows = [];
-
-  fileInput.addEventListener("change", e => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const data = parseCSV(reader.result);
-      rows = data.slice(1); // remove header row
-      runBtn.disabled = false;
-    };
-    reader.readAsText(e.target.files[0]);
-  });
 
   runBtn.addEventListener("click", () => {
     const prompt = promptInput.value.trim();
     if (!prompt) return;
+
+    if (!parsedRows.length) {
+      document.getElementById("promptResults").innerHTML = `
+        <div class="tool-card">
+          <p>Please upload a CSV first.</p>
+        </div>
+      `;
+      return;
+    }
 
     const action = matchAction(prompt);
 
@@ -180,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const result = action.handler(rows);
+    const result = action.handler(parsedRows);
     renderResults(result);
   });
 });
