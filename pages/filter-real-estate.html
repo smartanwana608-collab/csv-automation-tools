@@ -7,14 +7,40 @@
 
   <!-- Main Styles -->
   <link rel="stylesheet" href="../assets/css/main.css" />
+
+  <!-- PAGE-SAFE FIX (SCOPED ONLY TO THIS PAGE) -->
+  <style>
+    .tool-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-bottom: 120px;
+    }
+
+    .tool-card {
+      max-width: 100%;
+    }
+
+    #resultsPreview {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    #resultsPreview .result-card {
+      margin-top: 32px;
+    }
+
+    #resultsPreview .preview-table {
+      background: transparent;
+    }
+  </style>
 </head>
 
 <body>
 
 <!-- ===============================
-HEADER / NAV (Already working)
+HEADER / NAV
 ================================ -->
-<header class="site-header">
+<header class="nav">
   <div class="nav-container">
     <div class="logo">Leadcleer</div>
     <nav class="nav-links">
@@ -30,12 +56,15 @@ HEADER / NAV (Already working)
 <!-- ===============================
 HERO
 ================================ -->
-<section class="tool-hero">
-  <h1>Filter Real Estate Agents</h1>
-  <p>
-    Upload a CSV and intelligently separate agents from other contacts using
-    Leadcleer’s confidence-based detection.
-  </p>
+<section class="hero">
+  <div class="hero-content">
+    <h1>Filter <span>Real Estate Agents</span></h1>
+    <p class="hero-subtext">
+      Upload a CSV and intelligently separate agents from other contacts using
+      Leadcleer’s confidence-based detection.
+    </p>
+  </div>
+  <div class="hero-glow"></div>
 </section>
 
 <main class="tool-container">
@@ -71,11 +100,7 @@ HERO
     <div id="keywordList" class="keyword-list"></div>
 
     <div class="keyword-add">
-      <input
-        id="newKeyword"
-        type="text"
-        placeholder="Add keyword (e.g. remax)"
-      />
+      <input id="newKeyword" type="text" placeholder="Add keyword (e.g. remax)" />
       <button id="addKeywordBtn" class="btn secondary">Add</button>
     </div>
   </section>
@@ -91,14 +116,14 @@ HERO
     </button>
 
     <div class="analyze-summary">
-      <p><strong id="agentCount">0</strong> Agents</p>
-      <p><strong id="possibleCount">0</strong> Possible Agents</p>
-      <p><strong id="otherCount">0</strong> Other Contacts</p>
+      <p><strong id="agentTotal">0</strong> Agents</p>
+      <p><strong id="possibleTotal">0</strong> Possible Agents</p>
+      <p><strong id="otherTotal">0</strong> Other Contacts</p>
     </div>
   </section>
 
   <!-- ===============================
-  5. RESULTS PREVIEW (FIXED ✅)
+  5. RESULTS PREVIEW
   ================================ -->
   <section class="tool-card" id="resultsPreview">
 
@@ -107,94 +132,69 @@ HERO
       Preview of the first 10 records from each category. Download full CSVs below.
     </p>
 
-    <!-- ✅ REQUIRED GRID WRAPPER -->
-    <div class="results-grid">
-
-      <!-- AGENTS -->
-      <div class="result-card agents-card">
-        <div class="result-header">
-          <h3>Real Estate Agents</h3>
-          <span class="count-badge agent-badge">
-            <span id="agentCount">0</span> Found
-          </span>
-        </div>
-
-        <div class="table-wrap">
-          <table id="agentsPreviewTable" class="preview-table"></table>
-        </div>
-
-        <div class="result-actions">
-          <button id="downloadAgents" class="btn primary">
-            Download Agents CSV
-          </button>
-        </div>
+    <!-- AGENTS -->
+    <div class="result-card agents-card">
+      <div class="result-header">
+        <h3>Real Estate Agents</h3>
+        <span class="count-badge agent-badge">
+          <span id="agentCount">0</span> Found
+        </span>
       </div>
 
-      <!-- POSSIBLE AGENTS -->
-      <div class="result-card possible-card">
-        <div class="result-header">
-          <h3>Possible Agents</h3>
-          <span class="count-badge possible-badge">
-            <span id="possibleCount">0</span> Found
-          </span>
-        </div>
-
-        <div class="table-wrap">
-          <table id="possiblePreviewTable" class="preview-table"></table>
-        </div>
-
-        <div class="result-actions">
-          <button id="downloadPossible" class="btn secondary">
-            Download Possible Agents CSV
-          </button>
-        </div>
+      <div class="table-wrap">
+        <table id="agentsPreviewTable" class="preview-table"></table>
       </div>
 
-      <!-- OTHER CONTACTS -->
-      <div class="result-card other-card">
-        <div class="result-header">
-          <h3>Other Contacts</h3>
-          <span class="count-badge other-badge">
-            <span id="otherCount">0</span> Found
-          </span>
-        </div>
-
-        <div class="table-wrap">
-          <table id="othersPreviewTable" class="preview-table"></table>
-        </div>
-
-        <div class="result-actions">
-          <button id="downloadOthers" class="btn secondary">
-            Download Other Contacts CSV
-          </button>
-        </div>
+      <div class="result-actions">
+        <button id="downloadAgents" class="btn primary">
+          Download Agents CSV
+        </button>
       </div>
-
     </div>
+
+    <!-- POSSIBLE AGENTS -->
+    <div class="result-card possible-card">
+      <div class="result-header">
+        <h3>Possible Agents</h3>
+        <span class="count-badge possible-badge">
+          <span id="possibleCount">0</span> Found
+        </span>
+      </div>
+
+      <div class="table-wrap">
+        <table id="possiblePreviewTable" class="preview-table"></table>
+      </div>
+
+      <div class="result-actions">
+        <button id="downloadPossible" class="btn secondary">
+          Download Possible Agents CSV
+        </button>
+      </div>
+    </div>
+
+    <!-- OTHER CONTACTS -->
+    <div class="result-card other-card">
+      <div class="result-header">
+        <h3>Other Contacts</h3>
+        <span class="count-badge other-badge">
+          <span id="otherCount">0</span> Found
+        </span>
+      </div>
+
+      <div class="table-wrap">
+        <table id="othersPreviewTable" class="preview-table"></table>
+      </div>
+
+      <div class="result-actions">
+        <button id="downloadOthers" class="btn secondary">
+          Download Other Contacts CSV
+        </button>
+      </div>
+    </div>
+
   </section>
 
 </main>
-
-<!-- ===============================
-DISCLAIMER MODAL
-================================ -->
-<div id="disclaimerModal" class="disclaimer-modal">
-  <div class="disclaimer-box">
-    <h3>Important Disclaimer</h3>
-    <p>
-      Leadcleer processes files locally in your browser.
-      No uploads. No storage.
-    </p>
-    <p>
-      You are responsible for ensuring legal compliance of your data.
-    </p>
-
-    <div class="disclaimer-actions">
-      <button id="disclaimerCancel" class="btn secondary">Cancel</button>
-      <button id="disclaimerAccept" class="btn primary">Continue</button>
-    </div>
-  </div>
-</div>
 
 <!-- ===============================
 SCRIPT
