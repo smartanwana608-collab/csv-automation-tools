@@ -1,49 +1,48 @@
-// ===================================
-// REMOVE DUPLICATES (ACTION) — SAFE V1
-// File: remove-duplicates.js
-// ===================================
-
 /**
- * Remove duplicate rows from CSV
- * Duplicate = rows with identical values across all columns
- *
- * @param {Array} headers
- * @param {Array} rows
- * @returns {Object}
+ * ACTION: remove-duplicates
+ * Logic:
+ * - Prefer email column if found
+ * - Otherwise deduplicate by full row string
  */
-function removeDuplicates(headers, rows) {
-  // 🛡️ Defensive defaults
-  if (!Array.isArray(rows)) {
+
+export function removeDuplicates({ headers, rows }) {
+  if (!headers.length || !rows.length) {
     return {
-      headers: headers || [],
-      rows: [],
-      removedCount: 0
+      action: "remove-duplicates",
+      error: "No data provided"
     };
   }
 
+  const emailIndex = headers.findIndex(h =>
+    h.toLowerCase().includes("email")
+  );
+
   const seen = new Set();
-  const uniqueRows = [];
-  let removedCount = 0;
+  const cleaned = [];
 
   rows.forEach(row => {
-    const key = row.join("||");
+    let key;
 
-    if (seen.has(key)) {
-      removedCount++;
+    if (emailIndex !== -1) {
+      key = (row[emailIndex] || "").toLowerCase().trim();
     } else {
+      key = row.join("|").toLowerCase();
+    }
+
+    if (!seen.has(key)) {
       seen.add(key);
-      uniqueRows.push(row);
+      cleaned.push(row);
     }
   });
 
   return {
-    headers: headers || [],
-    rows: uniqueRows,
-    removedCount
+    action: "remove-duplicates",
+    summary: {
+      originalRows: rows.length,
+      cleanedRows: cleaned.length,
+      removed: rows.length - cleaned.length
+    },
+    headers,
+    rows: cleaned
   };
 }
-
-// ===================================
-// EXPORT FOR PROMPT ENGINE
-// ===================================
-window.removeDuplicates = removeDuplicates;
