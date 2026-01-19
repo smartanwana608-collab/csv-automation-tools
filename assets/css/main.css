@@ -372,142 +372,152 @@ h2 {
   }
 }
 /* =====================================================
-FILTER REAL ESTATE AGENTS TOOL
-Scoped safely inside main.css
-===================================================== */
+   FILTER REAL ESTATE TOOL (APPENDED TO main.css)
+   ===================================================== */
 
 .filter-agents-page .tool-container {
   max-width: 1100px;
-  margin: 0 auto;
-  padding: 80px 20px 120px;
+  margin: 80px auto 120px;
+  padding: 0 20px;
 }
 
-/* Override global section padding */
-.filter-agents-page section {
-  padding: 40px 0;
+.tool-header {
+  margin-bottom: 60px;
 }
 
-/* Step card */
-.filter-agents-page .tool-card {
-  background: var(--card);
+.tool-header h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+}
+
+.tool-subtitle {
+  color: var(--muted);
+  max-width: 720px;
+}
+
+/* ===== STEPS ===== */
+.tool-step {
+  margin-bottom: 48px;
+}
+
+.tool-card {
+  background: linear-gradient(180deg, #14172a, #0d0f1d);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 32px;
-  margin: 0 auto;
-  max-width: 900px;
 }
 
-/* Step titles */
-.filter-agents-page .step-title {
-  text-align: center;
-  font-size: 1.4rem;
-  margin-bottom: 24px;
-}
-
-/* Upload box */
-.filter-agents-page .upload-box {
-  margin-top: 16px;
+/* ===== UPLOAD ===== */
+.upload-box {
+  margin-top: 20px;
   padding: 32px;
+  border: 2px dashed var(--border);
   border-radius: 14px;
-  border: 1px dashed var(--border);
   text-align: center;
-  background: #0e1020;
 }
 
-/* Meta pills */
-.filter-agents-page .meta-pills {
+/* ===== META PILLS ===== */
+.meta-pills {
   display: flex;
-  justify-content: center;
-  gap: 14px;
+  gap: 12px;
   flex-wrap: wrap;
+  margin-top: 16px;
 }
 
-.filter-agents-page .meta-pill {
+.meta-pill {
   background: #fff;
-  color: #000;
-  padding: 8px 16px;
+  color: #111;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* ===== KEYWORDS ===== */
+.keyword-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.keyword-pill {
+  background: #fff;
+  color: #111;
+  padding: 8px 14px;
   border-radius: 999px;
   font-size: 0.85rem;
-  font-weight: 600;
+  cursor: pointer;
 }
 
-/* Keyword section */
-.filter-agents-page .keyword-list {
+.keyword-add {
   display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
+  gap: 12px;
 }
 
-.filter-agents-page .keyword-add {
+.keyword-add input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+/* ===== ANALYZE ===== */
+.analyze-summary {
   display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-/* Analyze summary */
-.filter-agents-page .analyze-summary {
+  gap: 16px;
   margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 14px;
   flex-wrap: wrap;
 }
 
-/* RESULTS */
-.filter-agents-page .results-step {
+/* ===== RESULTS ===== */
+.results-step {
   display: none;
 }
 
-.filter-agents-page .results-step.show {
+.results-step.show {
   display: block;
 }
 
-/* Results grid */
-.filter-agents-page .results-grid {
+.results-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 40px;
-  margin-top: 40px;
+  gap: 32px;
 }
 
-.filter-agents-page .result-card {
-  background: #0e1020;
-  border: 1px solid var(--border);
+.result-card {
+  background: #0f1220;
   border-radius: 16px;
   padding: 24px;
+  border: 1px solid var(--border);
 }
 
-/* Tables */
-.filter-agents-page .table-wrap {
-  max-height: 320px;
-  overflow: auto;
-  margin-bottom: 16px;
+.table-wrap {
+  overflow-x: auto;
+  margin: 16px 0;
 }
 
-.filter-agents-page table {
+.preview-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
 }
 
-.filter-agents-page th {
-  background: #12142a;
-  color: var(--muted);
+.preview-table th,
+.preview-table td {
   padding: 10px;
-  text-align: left;
-}
-
-.filter-agents-page td {
-  padding: 10px;
-  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
   white-space: nowrap;
 }
 
-/* Mobile */
-@media (max-width: 768px) {
-  .filter-agents-page .tool-card {
-    padding: 24px;
-  }
+.preview-table th {
+  color: var(--muted);
+  text-align: left;
+}
+
+/* ===== DOWNLOAD BUTTONS ===== */
+.result-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
 }
