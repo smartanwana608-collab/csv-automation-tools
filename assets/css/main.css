@@ -62,7 +62,7 @@ body {
   color: var(--violet);
 }
 
-/* ================= MOBILE MENU ================= */
+/* ================= MOBILE NAV ================= */
 .menu-toggle {
   display: none;
   background: none;
@@ -151,6 +151,7 @@ body {
   text-decoration: none;
   border: none;
   cursor: pointer;
+  text-align: center;
 }
 
 .btn.primary {
