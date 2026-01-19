@@ -1,129 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Filter Real Estate Agents | Leadcleer</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../assets/css/main.css" />
-</head>
+<section class="filter-page">
 
-<body class="filter-agents-page">
-
-<header class="nav">
-  <div class="nav-container">
-    <div class="logo">Leadcleer</div>
-    <nav class="nav-links">
-      <a href="../index.html">Home</a>
-      <a href="../features.html" class="active">Features</a>
-      <a href="../pricing.html">Pricing</a>
-      <a href="../how-it-works.html">How It Works</a>
-      <a href="../contact.html">Contact</a>
-    </nav>
-  </div>
-</header>
-
-<main class="tool-container">
-
-  <header class="tool-header">
-    <h1>Filter Real Estate Agents</h1>
-    <p class="tool-subtitle">
-      Upload a CSV and accurately split real estate agents from other contacts.
-    </p>
-  </header>
-
-  <section class="tool-step">
-    <div class="tool-card">
-      <h2>1. Upload CSV</h2>
-      <div class="upload-box">
-        <input type="file" id="csvFile" accept=".csv" />
-        <p>Choose a CSV file from your computer</p>
-      </div>
+  <!-- Upload -->
+  <div class="filter-section">
+    <h2>1. Upload CSV</h2>
+    <div class="upload-box">
+      <input type="file" id="csvInput" accept=".csv" />
     </div>
-  </section>
 
-  <section class="tool-step">
-    <div class="tool-card">
-      <h2>2. File Overview</h2>
-      <div class="meta-pills">
-        <span id="fileName" class="meta-pill">File —</span>
-        <span id="rowCount" class="meta-pill">Rows —</span>
-        <span id="columnCount" class="meta-pill">Columns —</span>
-      </div>
-    </div>
-  </section>
-
-  <section class="tool-step">
-    <div class="tool-card">
-      <h2>3. Detection Keywords</h2>
-      <p>Matched across name, company, and email.</p>
-      <div id="keywordList" class="keyword-list"></div>
-      <div class="keyword-add">
-        <input id="newKeyword" placeholder="Add keyword" />
-        <button id="addKeywordBtn" class="btn secondary">Add</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="tool-step">
-    <div class="tool-card">
-      <h2>4. Analyze</h2>
-      <button id="analyzeBtn" class="btn primary" disabled>Analyze CSV</button>
-      <div class="analyze-summary">
-        <span class="meta-pill"><strong id="agentCount">0</strong> Agents</span>
-        <span class="meta-pill"><strong id="possibleCount">0</strong> Possible</span>
-        <span class="meta-pill"><strong id="otherCount">0</strong> Others</span>
-      </div>
-    </div>
-  </section>
-
-  <section class="tool-step results-step" id="resultsPreview">
-    <div class="tool-card">
-      <h2>Results Preview</h2>
-
-      <div class="results-grid">
-
-        <div class="result-card">
-          <h3>Real Estate Agents</h3>
-          <div class="table-wrap">
-            <table id="agentsPreviewTable" class="preview-table"></table>
-          </div>
-        </div>
-
-        <div class="result-card">
-          <h3>Possible Agents</h3>
-          <div class="table-wrap">
-            <table id="possiblePreviewTable" class="preview-table"></table>
-          </div>
-        </div>
-
-        <div class="result-card">
-          <h3>Other Contacts</h3>
-          <div class="table-wrap">
-            <table id="othersPreviewTable" class="preview-table"></table>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-</main>
-
-<footer class="footer">
-  <div class="footer-container">
-    <div class="footer-brand">
-      <div class="footer-logo">
-        <span class="logo-dot"></span>
-        <span class="logo-text">Leadcleer</span>
-      </div>
-      <p class="footer-tagline">Turn messy CSVs into clean, usable leads — fast.</p>
+    <div class="file-meta">
+      <div class="meta-pill">File: <span id="fileName">—</span></div>
+      <div class="meta-pill">Rows: <span id="rowCount">—</span></div>
+      <div class="meta-pill">Columns: <span id="colCount">—</span></div>
     </div>
   </div>
-  <div class="footer-bottom">
-    © 2026 Leadcleer. All rights reserved.
-  </div>
-</footer>
 
-<script src="../assets/js/filter-agents.js"></script>
-</body>
-</html>
+  <!-- Keywords -->
+  <div class="filter-section">
+    <h2>2. Detection Keywords</h2>
+    <p>Matched across name, company, and email</p>
+
+    <div class="keyword-wrap" id="keywordBox"></div>
+
+    <div class="keyword-input">
+      <input id="newKeyword" placeholder="Add keyword" />
+      <button onclick="addKeyword()">Add</button>
+    </div>
+  </div>
+
+  <!-- Analyze -->
+  <div class="filter-section">
+    <h2>3. Analyze</h2>
+    <button onclick="analyzeCSV()">Analyze CSV</button>
+
+    <div class="analyze-row">
+      <div class="stat-pill"><span id="agentCount">0</span> Agents</div>
+      <div class="stat-pill"><span id="possibleCount">0</span> Possible</div>
+      <div class="stat-pill"><span id="otherCount">0</span> Others</div>
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <div class="filter-section">
+    <h2>Results Preview</h2>
+
+    <div class="preview-grid">
+
+      <div class="preview-box">
+        <h3>Leadcleer Agents</h3>
+        <div class="table-wrap">
+          <table id="agentsTable"></table>
+        </div>
+      </div>
+
+      <div class="preview-box">
+        <h3>Possible Agents</h3>
+        <div class="table-wrap">
+          <table id="possibleTable"></table>
+        </div>
+      </div>
+
+      <div class="preview-box">
+        <h3>Other Contacts</h3>
+        <div class="table-wrap">
+          <table id="othersTable"></table>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="download-row">
+      <button onclick="download('agents')">Download Agents CSV</button>
+      <button onclick="download('possible')">Download Possible CSV</button>
+      <button onclick="download('others')">Download Others CSV</button>
+    </div>
+  </div>
+
+</section>
